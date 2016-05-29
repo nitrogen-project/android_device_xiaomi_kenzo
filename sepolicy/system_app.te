@@ -1,0 +1,1 @@
+allow system_app fpce_socket:sock_file write;

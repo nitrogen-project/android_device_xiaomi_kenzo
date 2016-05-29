@@ -1,0 +1,9 @@
+# lirc device.
+type lirc_device, dev_type;
+
+# Goodix fingerprint device.
+type gx_fpd_device, dev_type;
+
+# Cust block device mounted on /cust.
+type cust_block_device, dev_type;
+

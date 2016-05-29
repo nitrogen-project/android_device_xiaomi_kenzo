@@ -1,0 +1,15 @@
+#Allow access to tee device
+allow fingerprintd tee_device:chr_file rw_file_perms;
+
+#Allow access to fpc device
+allow fingerprintd sysfs_fpc_dev:chr_file rw_file_perms;
+
+# allow HAL module to read dir contents
+allow fingerprintd fpc_data_file:file { create_file_perms };
+
+# allow HAL module to read/write/unlink contents of this dir
+allow fingerprintd fpc_data_file:dir rw_dir_perms;
+
+# This is required to access fpce sockets
+allow fingerprintd fpce_socket:sock_file create_file_perms;
+

@@ -1,0 +1,5 @@
+type fpce_socket, file_type;
+type sysfs_fpc_dev, sysfs_type, fs_type;
+type fpc_data_file, file_type, data_file_type;
+
+type gx_fpd_data_file, file_type, data_file_type;

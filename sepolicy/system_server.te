@@ -1,0 +1,5 @@
+#Allow access to lirc device
+allow system_server lirc_device:chr_file rw_file_perms;
+
+# Perform binder IPC to gx_fpd
+binder_call(system_server, gx_fpd);
