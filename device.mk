@@ -283,7 +283,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libqsap_sdk \
     libQWiFiSoftApCfg \
-    libwcnss_qmi \
     libwpa_client \
     hostapd \
     dhcpcd.conf \
@@ -291,8 +290,7 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     hostapd_default.conf \
     hostapd.accept \
-    hostapd.deny \
-    wcnss_service
+    hostapd.deny
 
 # Camera
 PRODUCT_PACKAGES += \
