@@ -113,6 +113,7 @@ _________________________________________________________________
 <MediaCodecs>
     <Include href="media_codecs_google_audio.xml" />
     <Include href="media_codecs_google_telephony.xml" />
+    <Include href="media_codecs_ffmpeg.xml" />
     <Settings>
         <Setting name="max-video-encoder-input-buffers" value="9" />
     </Settings>
