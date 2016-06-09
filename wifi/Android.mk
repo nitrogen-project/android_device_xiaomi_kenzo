@@ -35,8 +35,6 @@ LOCAL_MODULE_TAGS  := optional
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH  := $(TARGET_OUT_ETC)/firmware/wlan/prima
 LOCAL_SRC_FILES    := WCNSS_cfg.dat
-LOCAL_POST_INSTALL_CMD = \
-    $(hide) ln -sfT /data/misc/wifi/WCNSS_qcom_cfg.ini $(dir $(LOCAL_INSTALLED_MODULE))WCNSS_qcom_cfg.ini
 include $(BUILD_PREBUILT)
 
 endif
