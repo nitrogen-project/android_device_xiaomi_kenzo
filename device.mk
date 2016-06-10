@@ -198,8 +198,7 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.msm8952 \
-    com.qualcomm.location
+    gps.msm8952
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
@@ -308,8 +307,7 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    fingerprintd \
-    FingerprintServiceExtension
+    fingerprintd
 
 # FM radio  
 PRODUCT_PACKAGES += \
