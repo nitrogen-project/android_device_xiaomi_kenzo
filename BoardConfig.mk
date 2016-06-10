@@ -123,6 +123,7 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 TARGET_HW_DISK_ENCRYPTION := true
 
 # CNE and DPM
+BOARD_USES_QCNE := true
 TARGET_LDPRELOAD := libNimsWrap.so
 
 # Enable suspend during charger mode
