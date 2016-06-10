@@ -74,6 +74,9 @@ extern "C"
 #define IPA_MAX_ALG_ENTRIES 20
 #define IPA_MAX_RM_ENTRY 6
 
+#define IPV4_ADDR_LINKLOCAL 0xA9FE0000
+#define IPV4_ADDR_LINKLOCAL_MASK 0xFFFF0000
+
 #define V4_DEFAULT_ROUTE_TABLE_NAME  "ipa_dflt_rt"
 #define V4_LAN_ROUTE_TABLE_NAME  "COMRTBLLANv4"
 #define V4_WAN_ROUTE_TABLE_NAME  "WANRTBLv4"
@@ -187,6 +190,10 @@ typedef enum
 	IPA_WAN_XLAT_CONNECT_EVENT,               /* 53 ipacm_event_data_fid */
 	IPA_TETHERING_STATS_UPDATE_EVENT,         /* 54 ipacm_event_data_fid */
 	IPA_NETWORK_STATS_UPDATE_EVENT,           /* 55 ipacm_event_data_fid */
+	IPA_HANDLE_WAN_UP_TETHER,                 /* 56 ipacm_event_iface_up_tehter */
+	IPA_HANDLE_WAN_DOWN_TETHER,               /* 57 ipacm_event_iface_up_tehter */
+	IPA_HANDLE_WAN_UP_V6_TETHER,		  /* 58 ipacm_event_iface_up_tehter */
+	IPA_HANDLE_WAN_DOWN_V6_TETHER,		  /* 59 ipacm_event_iface_up_tehter */
 	IPACM_EVENT_MAX
 } ipa_cm_event_id;
 
@@ -289,6 +296,7 @@ typedef struct
 typedef struct _ipacm_event_data_iptype
 {
 	int if_index;
+	int if_index_tether;
 	enum ipa_ip_type iptype;
 } ipacm_event_data_iptype;
 
@@ -302,6 +310,7 @@ typedef struct _ipacm_event_data_addr
 	uint32_t  ipv4_addr_mask;
 	uint32_t  ipv6_addr[4];
 	uint32_t  ipv6_addr_mask[4];
+	uint32_t  ipv6_addr_gw[4];
 } ipacm_event_data_addr;
 
 typedef struct _ipacm_event_data_mac
@@ -326,6 +335,13 @@ typedef struct _ipacm_event_iface_up
 	bool is_sta;
 	uint8_t xlat_mux_id;
 }ipacm_event_iface_up;
+
+typedef struct _ipacm_event_iface_up_tether
+{
+	uint32_t if_index_tether;
+	uint32_t ipv6_prefix[2];
+	bool is_sta;
+}ipacm_event_iface_up_tehter;
 
 typedef enum
 {

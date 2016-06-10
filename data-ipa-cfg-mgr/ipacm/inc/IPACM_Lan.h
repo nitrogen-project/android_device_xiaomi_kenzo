@@ -185,6 +185,8 @@ public:
 
 	int handle_addr_evt_odu_bridge(ipacm_event_data_addr* data);
 
+	int handle_del_ipv6_addr(ipacm_event_data_all *data);
+
 	static bool odu_up;
 
 	/* install UL filter rule from Q6 */
@@ -313,6 +315,9 @@ protected:
 	/* handle tethering stats */
 	int handle_tethering_stats_event(ipa_get_data_stats_resp_msg_v01 *data);
 
+	/* handle tethering client */
+	int handle_tethering_client(bool reset, ipacm_client_enum ipa_client);
+
 	lan2lan_flt_rule_hdl lan2lan_flt_rule_hdl_v4[MAX_OFFLOAD_PAIR];
 	lan2lan_flt_rule_hdl lan2lan_flt_rule_hdl_v6[MAX_OFFLOAD_PAIR];
 
@@ -341,6 +346,8 @@ protected:
 	int num_wan_ul_fl_rule_v6;
 
 	bool is_active;
+	bool modem_ul_v4_set;
+	bool modem_ul_v6_set;
 
 	uint32_t if_ipv4_subnet;
 
