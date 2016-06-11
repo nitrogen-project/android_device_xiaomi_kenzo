@@ -89,6 +89,7 @@ PRODUCT_COPY_FILES += \
 #ANT+ stack
 PRODUCT_PACKAGES += \
     AntHalService \
+    com.dsi.ant.antradio_library \
     libantradio \
     antradio_app
 
