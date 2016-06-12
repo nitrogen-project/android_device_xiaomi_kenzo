@@ -188,6 +188,9 @@ TARGET_PER_MGR_ENABLED := true
 #PCI RCS
 TARGET_USES_PCI_RCS := false
 
+# Enables CSVT
+TARGET_USES_CSVT := true
+
 MALLOC_IMPL := dlmalloc
 
 # Enable sensor multi HAL
