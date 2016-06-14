@@ -334,6 +334,10 @@ PRODUCT_PACKAGES += \
     ipacm \
     libipanat
 
+# Gello
+PRODUCT_PACKAGES += \
+    Gello
+
 # Misc dependency packages
 PRODUCT_PACKAGES += \
     ebtables \
