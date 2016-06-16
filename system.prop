@@ -29,9 +29,9 @@ persist.radio.NO_STAPA=1
 persist.radio.cs_srv_type=1
 persist.radio.sib16_support=1
 persist.radio.custom_ecc=1
-persist.radio.calls.on.ims=0
-persist.radio.jbims=0
-persist.radio.csvt.enabled=false
+persist.radio.calls.on.ims=1
+persist.radio.jbims=1
+persist.radio.csvt.enabled=true
 persist.radio.rat_on=combine
 persist.radio.mt_sms_ack=20
 persist.radio.apm_sim_not_pwdn=1
@@ -253,3 +253,9 @@ camera.lowpower.record.enable=1
 
 #enable game colocation feature
 sched.colocate.enable=1
+
+#gps
+persist.gps.qc_nlp_in_use=1
+ro.gps.agps_provider=1
+
+ro.frp.pst=/dev/block/bootdevice/by-name/config
