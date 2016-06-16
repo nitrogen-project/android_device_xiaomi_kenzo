@@ -47,7 +47,7 @@
 <!ELEMENT EncoderOutputFileFormat EMPTY>
 <!ATTLIST EncoderOutputFileFormat name (mp4|3gp) #REQUIRED>
 <!ELEMENT VideoEncoderCap EMPTY>
-<!ATTLIST VideoEncoderCap name (h264|h263|m4v|wmv) #REQUIRED>
+<!ATTLIST VideoEncoderCap name (h264|h263|m4v) #REQUIRED>
 <!ATTLIST VideoEncoderCap enabled (true|false) #REQUIRED>
 <!ATTLIST VideoEncoderCap minBitRate CDATA #REQUIRED>
 <!ATTLIST VideoEncoderCap maxBitRate CDATA #REQUIRED>
@@ -70,12 +70,6 @@
 <!ATTLIST AudioEncoderCap minChannels (1|2|6) #REQUIRED>
 <!ATTLIST AudioEncoderCap maxChannels (1|2|6) #REQUIRED>
 <!ELEMENT VideoDecoderCap EMPTY>
-<!ATTLIST VideoDecoderCap name (wmv) #REQUIRED>
-<!ATTLIST VideoDecoderCap enabled (true|false) #REQUIRED>
-<!ELEMENT AudioDecoderCap EMPTY>
-<!ATTLIST AudioDecoderCap name (wma) #REQUIRED>
-<!ATTLIST AudioDecoderCap enabled (true|false) #REQUIRED>
-<!ELEMENT VideoEditorCap EMPTY>
 <!ATTLIST VideoEditorCap maxInputFrameWidth CDATA #REQUIRED>
 <!ATTLIST VideoEditorCap maxInputFrameHeight CDATA #REQUIRED>
 <!ATTLIST VideoEditorCap maxOutputFrameWidth CDATA #REQUIRED>
@@ -730,8 +724,8 @@
         for TEST applications. For other applications, we do
         not perform any checks at all.
     -->
-    <VideoDecoderCap name="wmv" enabled="true"/>
-    <AudioDecoderCap name="wma" enabled="true"/>
+    <VideoDecoderCap name="wmv" enabled="false"/>
+    <AudioDecoderCap name="wma" enabled="false"/>
 
     <!--
         The VideoEditor Capability configuration:
