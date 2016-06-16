@@ -342,7 +342,7 @@ on boot
 service fingerprintd /system/bin/fingerprintd   
     class late_start 
     socket fpce stream 0666 system system
-    user system
+    user system sdcard_rw
 
 service gx_fpd /system/bin/gx_fpd
     class late_start
@@ -352,6 +352,9 @@ service gx_fpd /system/bin/gx_fpd
 
 on property:ro.boot.fpsensor=gdx
     start gx_fpd
+
+on property:persist.sys.fp.goodix=0
+    stop gx_fpd
 
 service mtservice /system/bin/mtd
     class late_start
