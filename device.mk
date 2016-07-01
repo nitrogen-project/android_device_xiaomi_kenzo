@@ -326,8 +326,7 @@ PRODUCT_PACKAGES += \
     libxml2
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/mbn_ota.txt:system/etc/mbn_ota.txt \
-    $(LOCAL_PATH)/configs/apns-conf.xml:system/etc/apns-conf.xml
+    $(LOCAL_PATH)/configs/mbn_ota.txt:system/etc/mbn_ota.txt
 
 # IPACM
 PRODUCT_PACKAGES += \
