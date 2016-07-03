@@ -26,6 +26,12 @@
          Example: 1920x1080 -->
     <string name="preview_size_for_photo">1920x1080</string>
 
+    <!-- Restart preview for back camera onPictureTaken -->
+    <bool name="back_camera_restart_preview_onPictureTaken">true</bool>
+
+    <!-- Restart preview for front camera onPictureTaken -->
+    <bool name="front_camera_restart_preview_onPictureTaken">true</bool>
+
     <!-- Set this to true to use device manufacturer and model for exif -->
-    <bool name="override_maker_and_model_tag">false</bool>
+    <bool name="override_maker_and_model_tag">true</bool>
 </resources>
