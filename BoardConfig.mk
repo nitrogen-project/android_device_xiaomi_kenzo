@@ -147,6 +147,7 @@ BOARD_USES_QCNE := true
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
+BOARD_HEALTHD_CUSTOM_CHARGER_RES := $(DEVICE_PATH)/charger/images
 
 # Display
 BOARD_EGL_CFG := $(DEVICE_PATH)/egl.cfg
