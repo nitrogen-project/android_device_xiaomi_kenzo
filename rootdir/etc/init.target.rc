@@ -342,7 +342,8 @@ on boot
 service fingerprintd /system/bin/fingerprintd   
     class late_start 
     socket fpce stream 0666 system system
-    user system sdcard_rw
+    user system
+    group system sdcard_rw
 
 service gx_fpd /system/bin/gx_fpd
     class late_start
