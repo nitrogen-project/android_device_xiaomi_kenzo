@@ -241,6 +241,9 @@ ro.cutoff_voltage_mv=3200
 #set the debug configuration for 8956/76
 persist.debug.8976.config=true
 
+# camera
+persist.camera.HAL3.enabled=1
+
 #force HAL1 for below packages
 camera.hal1.packagelist=com.skype.raider,com.google.android.talk
 
