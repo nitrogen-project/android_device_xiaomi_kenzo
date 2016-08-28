@@ -85,6 +85,7 @@ on post-fs-data
     mkdir /data/misc/dts 0770 media audio
     mkdir /data/misc/audio_pp 0771 media audio
     mkdir /data/fpc 0700 system system
+    mkdir /data/goodix 0700 system system
 
 #start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
@@ -351,11 +352,14 @@ service gx_fpd /system/bin/gx_fpd
     group system
     disabled
 
-on property:ro.boot.fpsensor=gdx
-    start gx_fpd
+#on property:ro.boot.fpsensor=gdx
+#    start gx_fpd
 
 on property:persist.sys.fp.goodix=0
     stop gx_fpd
+
+on property:persist.sys.fp.goodix=1
+    start gx_fpd
 
 service mtservice /system/bin/mtd
     class late_start
