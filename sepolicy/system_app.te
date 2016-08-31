@@ -1,1 +1,3 @@
 allow system_app fpce_socket:sock_file write;
+allow system_app fpc_data_file:sock_file write;
+allow system_app fingerprintd:unix_stream_socket { read write connectto};
