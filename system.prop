@@ -64,12 +64,6 @@ persist.dpm.nsrm.bkg.evt=16251
 persist.sys.dpmd.nsrm=3
 
 #system props for the MM modules
-media.stagefright.enable-player=true
-media.stagefright.enable-http=true
-media.stagefright.enable-aac=true
-media.stagefright.enable-qcp=true
-media.stagefright.enable-fma2dp=true
-media.stagefright.enable-scan=true
 media.msm8956hw=0
 mm.enable.smoothstreaming=true
 av.debug.disable.pers.cache=true
@@ -77,17 +71,15 @@ mmp.enable.3g2=true
 media.aac_51_output_enabled=true
 
 #codecs:(PARSER_)AAC AC3 AMR_NB AMR_WB ASF AVI DTS FLV 3GP 3G2 MKV MP2PS MP2TS MP3 OGG QCP WAV FLAC AIFF APE
-mm.enable.qcom_parser=1048575
+mm.enable.qcom_parser=1047551
 
 # Additional buffers shared between Camera and Video
 vidc.enc.dcvs.extra-buff-count=2
 
-# Default to AwesomePlayer
-media.stagefright.use-awesome=false
 #Audio voice concurrency related flags
 voice.playback.conc.disabled=true
 voice.record.conc.disabled=false
-voice.voip.conc.disabled=false
+voice.voip.conc.disabled=true
 #Decides the audio fallback path during voice call, deep-buffer and fast are the two allowed fallback paths now.
 voice.conc.fallbackpath=deep-buffer
 
