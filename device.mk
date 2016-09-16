@@ -87,6 +87,9 @@ PRODUCT_PACKAGES += \
     libantradio \
     antradio_app
 
+PRODUCT_COPY_FILES += \
+    external/ant-wireless/antradio-library/com.dsi.ant.antradio_library.xml:system/etc/permissions/com.dsi.ant.antradio_library.xml
+
 # Audio configuration file
 PRODUCT_COPY_FILES += \
     device/xiaomi/kenzo/audio/audio_policy.conf:system/etc/audio_policy.conf \
