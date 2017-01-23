@@ -1858,6 +1858,8 @@ typedef enum {
     CAM_INTF_AF_STATE_TRANSITION, /* 191 */
     /* Param for enabling instant aec*/
     CAM_INTF_PARM_INSTANT_AEC,
+    /* Whether HAL has run into DRAIN error */
+    CAM_INTF_META_DAEMON_RESTART,
     CAM_INTF_PARM_MAX /* 192 */
 } cam_intf_parm_type_t;
 
