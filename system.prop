@@ -9,7 +9,7 @@ persist.audio.fluence.voicerec=true
 voice.voip.conc.disabled=true
 
 # Camera
-media.camera.ts.monotonic=0
+media.camera.ts.monotonic=1
 persist.camera.HAL3.enabled=1
 
 # Radio
