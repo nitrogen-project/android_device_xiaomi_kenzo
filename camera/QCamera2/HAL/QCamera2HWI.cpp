@@ -2087,7 +2087,11 @@ bool QCamera2HardwareInterface::getRecordingHintValue(void)
  *==========================================================================*/
 int32_t QCamera2HardwareInterface::setRecordingHintValue(int32_t value)
 {
-    return mParameters.updateRecordingHintValue(value);
+    int32_t rc = NO_ERROR;
+    pthread_mutex_lock(&m_parm_lock);
+    rc = mParameters.updateRecordingHintValue(value);
+    pthread_mutex_unlock(&m_parm_lock);
+    return rc;
 }
 
 /*===========================================================================
@@ -3318,7 +3322,9 @@ int QCamera2HardwareInterface::startPreview()
 int32_t QCamera2HardwareInterface::updatePostPreviewParameters() {
     // Enable OIS only in Camera mode and 4k2k camcoder mode
     int32_t rc = NO_ERROR;
+    pthread_mutex_lock(&m_parm_lock);
     rc = mParameters.updateOisValue(1);
+    pthread_mutex_unlock(&m_parm_lock);
     return NO_ERROR;
 }
 
@@ -3397,7 +3403,9 @@ int QCamera2HardwareInterface::preStartRecording()
             stopPreview();
 
             // Set recording hint to TRUE
+            pthread_mutex_lock(&m_parm_lock);
             mParameters.updateRecordingHintValue(TRUE);
+            pthread_mutex_unlock(&m_parm_lock);
             rc = preparePreview();
             if (rc == NO_ERROR) {
                 rc = startPreview();
@@ -3753,6 +3761,8 @@ int32_t QCamera2HardwareInterface::configureAdvancedCapture()
         return rc;
     }
 
+    pthread_mutex_lock(&m_parm_lock);
+
     /* Temporarily stop display only if not in stillmore livesnapshot */
     if (!(mParameters.isStillMoreEnabled() &&
             mParameters.isSeeMoreEnabled())) {
@@ -3792,6 +3802,7 @@ int32_t QCamera2HardwareInterface::configureAdvancedCapture()
         mAdvancedCaptureConfigured = false;
     }
 
+    pthread_mutex_unlock(&m_parm_lock);
     CDBG_HIGH("%s: X",__func__);
     return rc;
 }
@@ -3961,6 +3972,7 @@ int32_t QCamera2HardwareInterface::configureOptiZoom()
     mParameters.setAndCommitZoom(0);
 
     mParameters.set3ALock(QCameraParameters::VALUE_TRUE);
+
     mIs3ALocked = true;
 
     return rc;
@@ -4120,7 +4132,9 @@ int QCamera2HardwareInterface::preTakePicture()
         if (getRelatedCamSyncInfo()->sync_control != CAM_SYNC_RELATED_SENSORS_ON) {
             CDBG_HIGH("%s: restart preview if rec hint is true and preview is running", __func__);
             stopPreview();
+            pthread_mutex_lock(&m_parm_lock);
             mParameters.updateRecordingHintValue(FALSE);
+            pthread_mutex_unlock(&m_parm_lock);
             // start preview again
             rc = preparePreview();
             if (rc == NO_ERROR) {
@@ -4388,7 +4402,9 @@ int QCamera2HardwareInterface::takePicture()
             stopChannel(QCAMERA_CH_TYPE_PREVIEW);
             delChannel(QCAMERA_CH_TYPE_PREVIEW);
 
+            pthread_mutex_lock(&m_parm_lock);
             rc = mParameters.updateRAW(gCamCapability[mCameraId]->raw_dim[0]);
+            pthread_mutex_unlock(&m_parm_lock);
             if (NO_ERROR != rc) {
                 ALOGE("%s: Raw dimension update failed %d", __func__, rc);
                 return rc;
@@ -4597,7 +4613,9 @@ int QCamera2HardwareInterface::cancelPicture()
     //stop post processor
     m_postprocessor.stop();
 
+    pthread_mutex_lock(&m_parm_lock);
     unconfigureAdvancedCapture();
+    pthread_mutex_unlock(&m_parm_lock);
 
     mParameters.setDisplayFrame(TRUE);
 
@@ -5083,7 +5101,9 @@ int QCamera2HardwareInterface::cancelLiveSnapshot()
 {
     int rc = NO_ERROR;
 
+    pthread_mutex_lock(&m_parm_lock);
     unconfigureAdvancedCapture();
+    pthread_mutex_unlock(&m_parm_lock);
 
     if (mLiveSnapshotThread != 0) {
         pthread_join(mLiveSnapshotThread,NULL);
@@ -5197,7 +5217,9 @@ int QCamera2HardwareInterface::sendCommand(int32_t command,
         if ( !m_stateMachine.isCaptureRunning() ) {
             CDBG_HIGH("%s: Longshot Enabled", __func__);
             mLongshotEnabled = true;
+            pthread_mutex_lock(&m_parm_lock);
             rc = mParameters.setLongshotEnable(mLongshotEnabled);
+            pthread_mutex_unlock(&m_parm_lock);
 
             // Due to recent buffer count optimizations
             // ZSL might run with considerably less buffers
@@ -5254,7 +5276,9 @@ int QCamera2HardwareInterface::sendCommand(int32_t command,
         mPrepSnapRun = false;
         CDBG_HIGH("%s: Longshot Disabled", __func__);
         mLongshotEnabled = false;
+        pthread_mutex_lock(&m_parm_lock);
         rc = mParameters.setLongshotEnable(mLongshotEnabled);
+        pthread_mutex_unlock(&m_parm_lock);
         mCACDoneReceived = FALSE;
         break;
     case CAMERA_CMD_HISTOGRAM_ON:
@@ -5418,7 +5442,9 @@ int QCamera2HardwareInterface::dump(int fd)
 
     /* send UPDATE_DEBUG_LEVEL to the backend so that they can read the
        debug level property */
+    pthread_mutex_lock(&m_parm_lock);
     mParameters.updateDebugLevel();
+    pthread_mutex_unlock(&m_parm_lock);
     return NO_ERROR;
 }
 
@@ -5772,7 +5798,9 @@ int32_t QCamera2HardwareInterface::processAutoFocusEvent(cam_auto_focus_data_t &
             break;
         }
         // update focus distance
+        pthread_mutex_lock(&m_parm_lock);
         mParameters.updateFocusDistances(&focus_data.focus_dist);
+        pthread_mutex_unlock(&m_parm_lock);
 
         //flush any old snapshot frames in ZSL Q which are not focused.
         if ((CAM_AF_STATE_FOCUSED_LOCKED == focus_data.focus_state) &&
@@ -5819,7 +5847,9 @@ int32_t QCamera2HardwareInterface::processAutoFocusEvent(cam_auto_focus_data_t &
                 (focus_data.focus_state == CAM_AF_STATE_NOT_FOCUSED_LOCKED)) {
 
             // update focus distance
+            pthread_mutex_lock(&m_parm_lock);
             mParameters.updateFocusDistances(&focus_data.focus_dist);
+            pthread_mutex_unlock(&m_parm_lock);
 
             if ((focusMode == CAM_FOCUS_MODE_CONTINOUS_PICTURE) &&
                     (CAM_AF_STATE_FOCUSED_LOCKED == focus_data.focus_state) &&
@@ -6063,8 +6093,10 @@ int32_t QCamera2HardwareInterface::processPrepSnapshotDoneEvent(
         prep_snapshot_state == NEED_FUTURE_FRAME) {
         CDBG_HIGH("%s: already handled in mm-camera-intf, no ops here", __func__);
         if (isRetroPicture()) {
+            pthread_mutex_lock(&m_parm_lock);
             mParameters.setAecLock("true");
             mParameters.commitParameters();
+            pthread_mutex_unlock(&m_parm_lock);
             m_bLedAfAecLock = TRUE;
         }
     }
@@ -6086,7 +6118,9 @@ int32_t QCamera2HardwareInterface::processPrepSnapshotDoneEvent(
 int32_t QCamera2HardwareInterface::processASDUpdate(cam_auto_scene_t scene)
 {
     //set ASD parameter
+    pthread_mutex_lock(&m_parm_lock);
     mParameters.set(QCameraParameters::KEY_SELECTED_AUTO_SCENE, mParameters.getASDStateString(scene));
+    pthread_mutex_unlock(&m_parm_lock);
 
     size_t data_len = sizeof(cam_auto_scene_t);
     size_t buffer_len = 1 *sizeof(int)       //meta type
@@ -6315,7 +6349,9 @@ int32_t QCamera2HardwareInterface::prepareRawStream(QCameraChannel *curChannel)
             }
         }
     }
+    pthread_mutex_lock(&m_parm_lock);
     rc = mParameters.updateRAW(max_dim);
+    pthread_mutex_unlock(&m_parm_lock);
     return rc;
 }
 /*===========================================================================
@@ -8764,7 +8800,11 @@ QCameraExif *QCamera2HardwareInterface::getExifData()
  *==========================================================================*/
 int32_t QCamera2HardwareInterface::setHistogram(bool histogram_en)
 {
-    return mParameters.setHistogram(histogram_en);
+    int32_t rc = NO_ERROR;
+    pthread_mutex_lock(&m_parm_lock);
+    rc = mParameters.setHistogram(histogram_en);
+    pthread_mutex_unlock(&m_parm_lock);
+    return rc;
 }
 
 /*===========================================================================
@@ -8781,7 +8821,11 @@ int32_t QCamera2HardwareInterface::setHistogram(bool histogram_en)
  *==========================================================================*/
 int32_t QCamera2HardwareInterface::setFaceDetection(bool enabled)
 {
-    return mParameters.setFaceDetection(enabled, true);
+    int32_t rc = NO_ERROR;
+    pthread_mutex_lock(&m_parm_lock);
+    rc = mParameters.setFaceDetection(enabled, true);
+    pthread_mutex_unlock(&m_parm_lock);
+    return rc;
 }
 
 /*===========================================================================
@@ -9120,9 +9164,11 @@ void *QCamera2HardwareInterface::deferredWorkRoutine(void *obj)
                         // time for jpeg_open and calibration data is a
                         // get param for now, so params needs to be initialized
                         // before postproc init
+                        pthread_mutex_lock(&pme->m_parm_lock);
                         pme->mParameters.init(cap,
                                 pme->mCameraHandle,
                                 pme);
+                        pthread_mutex_unlock(&pme->m_parm_lock);
                         // Get related cam calibration only in
                         // dual camera mode
                         if (pme->getRelatedCamSyncInfo()->sync_control ==
