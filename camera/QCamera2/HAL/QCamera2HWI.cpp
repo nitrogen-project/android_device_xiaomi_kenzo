@@ -750,16 +750,15 @@ void QCamera2HardwareInterface::release_recording_frame(
     }
     CDBG("%s: E camera id %d", __func__, hw->getCameraId());
     //Close and delete duplicated native handle and FD's
-    if (hw->mVideoMem != NULL) {
-         ret = hw->mVideoMem->closeNativeHandle(opaque,
-                     hw->mStoreMetaDataInFrame > 0);
-         if (ret != NO_ERROR) {
-             ALOGE("Invalid video metadata");
-             return;
-         }
-     } else {
-        ALOGW("Possible FD leak. Release recording called after stop");
-     }
+    if ((hw->mVideoMem != NULL) && (hw->mStoreMetaDataInFrame)) {
+         ret = hw->mVideoMem->closeNativeHandle(opaque, TRUE);
+        if (ret != NO_ERROR) {
+            ALOGE("Invalid video metadata");
+            return;
+        }
+    } else {
+        ALOGE("Possible FD leak. Release recording called after stop");
+    }
 
     hw->lockAPI();
     qcamera_api_result_t apiResult;
@@ -2729,7 +2728,10 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
             }
             videoMemory->setVideoInfo(usage, fmt);
             mem = videoMemory;
-            mVideoMem = videoMemory;
+            if (!mParameters.getBufBatchCount()) {
+                //For batch mode this will be part of user buffer.
+                mVideoMem = videoMemory;
+            }
         }
         break;
     case CAM_STREAM_TYPE_CALLBACK:

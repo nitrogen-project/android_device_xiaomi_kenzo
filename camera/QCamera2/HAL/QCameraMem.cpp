@@ -1626,8 +1626,7 @@ int QCameraVideoMemory::closeNativeHandle(const void *data, bool metadata)
             return BAD_VALUE;
         }
     } else {
-        ALOGE("Not of type video meta buffer. Failed");
-        return BAD_VALUE;
+        ALOGW("Warning: Not of type video meta buffer");
     }
 #endif
     return rc;
