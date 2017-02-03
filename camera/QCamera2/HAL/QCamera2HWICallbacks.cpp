@@ -745,6 +745,9 @@ void QCamera2HardwareInterface::synchronous_stream_cb_routine(
             mPreviewTimestamp = frameTime;
         }
     }
+    // Convert Boottime from camera to Monotime for display if needed.
+    // Otherwise, mBootToMonoTimestampOffset value will be 0.
+    mPreviewTimestamp = mPreviewTimestamp - pme->mBootToMonoTimestampOffset;
     stream->mStreamTimestamp = frameTime;
 #endif
     memory = (QCameraGrallocMemory *)super_frame->bufs[0]->mem_info;
@@ -1378,6 +1381,9 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
     if (frame->buf_type == CAM_STREAM_BUF_TYPE_MPLANE) {
         nsecs_t timeStamp;
         timeStamp = nsecs_t(frame->ts.tv_sec) * 1000000000LL + frame->ts.tv_nsec;
+        // Convert Boottime from camera to Monotime for video if needed.
+        // Otherwise, mBootToMonoTimestampOffset value will be 0.
+        timeStamp = timeStamp - pme->mBootToMonoTimestampOffset;
         CDBG("Send Video frame to services/encoder TimeStamp : %lld",
             timeStamp);
         QCameraMemory *videoMemObj = (QCameraMemory *)frame->mem_info;
@@ -1460,6 +1466,11 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
                 cbArg.cb_type = QCAMERA_DATA_TIMESTAMP_CALLBACK;
                 cbArg.msg_type = CAMERA_MSG_VIDEO_FRAME;
                 cbArg.data = video_mem;
+
+                // Convert Boottime from camera to Monotime for video if needed.
+                // Otherwise, mBootToMonoTimestampOffset value will be 0.
+                timeStamp = timeStamp - pme->mBootToMonoTimestampOffset;
+                CDBG("Final video buffer TimeStamp : %lld ", timeStamp);
                 cbArg.timestamp = timeStamp;
                 int32_t rc = pme->m_cbNotifier.notifyCallback(cbArg);
                 if (rc != NO_ERROR) {
