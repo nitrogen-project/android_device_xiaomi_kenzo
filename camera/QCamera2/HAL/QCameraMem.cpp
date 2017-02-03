@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015, The Linux Foundataion. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundataion. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -35,12 +35,21 @@
 #include <utils/Log.h>
 #include <gralloc_priv.h>
 #include <QComOMXMetadata.h>
-#include "OMX_QCOMExtns.h"
 #include <OMX_IVCommon.h>
 
 #include "QCamera2HWI.h"
 #include "QCameraMem.h"
 #include "QCameraParameters.h"
+
+// Media dependencies
+#include "OMX_QCOMExtns.h"
+#ifdef USE_MEDIA_EXTENSIONS
+#include <media/hardware/HardwareAPI.h>
+typedef struct VideoNativeHandleMetadata media_metadata_buffer;
+#else
+#include "QComOMXMetadata.h"
+typedef struct encoder_media_buffer_type media_metadata_buffer;
+#endif
 
 extern "C" {
 #include <mm_camera_interface.h>
@@ -1257,6 +1266,7 @@ QCameraVideoMemory::QCameraVideoMemory(camera_request_memory memory,
     : QCameraStreamMemory(memory, cached)
 {
     memset(mMetadata, 0, sizeof(mMetadata));
+    memset(mNativeHandle, 0, sizeof(mNativeHandle));
     mMetaBufCount = 0;
     mBufType = bufType;
     //Set Default color conversion format
@@ -1307,13 +1317,7 @@ int QCameraVideoMemory::allocate(uint8_t count, size_t size, uint32_t isSecure)
             return rc;
         }
         for (int i = 0; i < count; i ++) {
-            struct encoder_media_buffer_type * packet =
-                    (struct encoder_media_buffer_type *)mMetadata[i]->data;
-            /*data[0] => FD data[1] => OFFSET data[2] => SIZE data[3] => USAGE
-            data[4] => TIMESTAMP data[5] => FORMAT*/
-            packet->meta_handle = native_handle_create(1, VIDEO_METADATA_NUM_INTS);
-            packet->buffer_type = kMetadataBufferTypeCameraSource;
-            native_handle_t * nh = const_cast<native_handle_t *>(packet->meta_handle);
+            native_handle_t *nh =  mNativeHandle[i];
             if (!nh) {
                 ALOGE("%s: Error in getting video native handle", __func__);
                 ATRACE_END();
@@ -1359,7 +1363,7 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
     if (mBufType != CAM_STREAM_BUF_TYPE_USERPTR) {
         for (int i = mBufferCount; i < count + mBufferCount; i ++) {
             mMetadata[i] = mGetMemory(-1,
-                    sizeof(struct encoder_media_buffer_type), 1, this);
+                    sizeof(media_metadata_buffer), 1, this);
             if (!mMetadata[i]) {
                 ALOGE("allocation of video metadata failed.");
                 for (int j = mBufferCount; j <= i-1; j ++) {
@@ -1371,13 +1375,18 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
                 ATRACE_END();
                 return NO_MEMORY;
             }
-            struct encoder_media_buffer_type * packet =
-                    (struct encoder_media_buffer_type *)mMetadata[i]->data;
-            /*data[0] => FD data[1] => OFFSET data[2] => SIZE data[3] => USAGE
-            data[4] => TIMESTAMP data[5] => FORMAT*/
-            packet->meta_handle = native_handle_create(1, VIDEO_METADATA_NUM_INTS);
+            media_metadata_buffer * packet =
+                    (media_metadata_buffer*)mMetadata[i]->data;
+
+            mNativeHandle[i] = native_handle_create(1, VIDEO_METADATA_NUM_INTS);
+#ifdef USE_MEDIA_EXTENSIONS
+            packet->eType = kMetadataBufferTypeNativeHandleSource;
+            packet->pHandle = mNativeHandle[i];
+#else
+            packet->meta_handle = mNativeHandle[i];
             packet->buffer_type = kMetadataBufferTypeCameraSource;
-            native_handle_t * nh = const_cast<native_handle_t *>(packet->meta_handle);
+#endif
+            native_handle_t * nh = mNativeHandle[i];
             if (!nh) {
                 ALOGE("%s: Error in getting video native handle", __func__);
                 ATRACE_END();
@@ -1412,17 +1421,42 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
 int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
 {
     int rc = NO_ERROR;
+    int numFDs = 1;
+    int numInts = 5;
 
     for (int i = 0; i < buf_cnt; i++) {
         mMetadata[i] = mGetMemory(-1,
-                sizeof(struct encoder_media_buffer_type), 1, this);
+                sizeof(media_metadata_buffer), 1, this);
         if (!mMetadata[i]) {
             ALOGE("allocation of video metadata failed.");
             for (int j = (i - 1); j >= 0; j--) {
+                if (NULL != mNativeHandle[j]) {
+                    native_handle_delete(mNativeHandle[j]);
+                }
                 mMetadata[j]->release(mMetadata[j]);
             }
             return NO_MEMORY;
         }
+        media_metadata_buffer *packet = (media_metadata_buffer *)mMetadata[i]->data;
+        mNativeHandle[i] = native_handle_create(numFDs, (numInts * numFDs));
+        if (mNativeHandle[i] == NULL) {
+            ALOGE("Error in getting video native handle");
+            for (int j = (i - 1); j >= 0; j--) {
+                mMetadata[i]->release(mMetadata[i]);
+                if (NULL != mNativeHandle[j]) {
+                    native_handle_delete(mNativeHandle[j]);
+                }
+                mMetadata[j]->release(mMetadata[j]);
+            }
+            return NO_MEMORY;
+        }
+#ifdef USE_MEDIA_EXTENSIONS
+        packet->eType = kMetadataBufferTypeNativeHandleSource;
+        packet->pHandle = mNativeHandle[i];
+#else
+        packet->buffer_type = kMetadataBufferTypeCameraSource;
+        packet->meta_handle = mNativeHandle[i];
+#endif
     }
     mMetaBufCount = buf_cnt;
     return rc;
@@ -1440,6 +1474,15 @@ int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
 void QCameraVideoMemory::deallocateMeta()
 {
     for (int i = 0; i < mMetaBufCount; i ++) {
+        native_handle_t *nh = mNativeHandle[i];
+        if (NULL != nh) {
+            if (native_handle_delete(nh)) {
+                ALOGE("Unable to delete native handle");
+            }
+        } else {
+            ALOGE("native handle not available");
+        }
+        mNativeHandle[i] = NULL;
         mMetadata[i]->release(mMetadata[i]);
         mMetadata[i] = NULL;
     }
@@ -1506,6 +1549,77 @@ camera_memory_t *QCameraVideoMemory::getMemory(uint32_t index,
         return mMetadata[index];
     else
         return mCameraMemory[index];
+}
+
+/*===========================================================================
+* FUNCTION   : updateNativeHandle
+
+* DESCRIPTION: Updating native handle pointer
+*
+* PARAMETERS :
+*   @index   : buffer index
+*   @metadata: flag if it's metadata
+*
+* RETURN     : camera native handle ptr
+*              NULL if not supported or failed
+*==========================================================================*/
+native_handle_t *QCameraVideoMemory::updateNativeHandle(uint32_t index, bool metadata)
+{
+    if (index >= mMetaBufCount || (!metadata && index >= mBufferCount)) {
+        return NULL;
+    }
+
+    native_handle_t *nh = NULL;
+    if (metadata && mMetadata[index] != NULL) {
+        media_metadata_buffer *packet =
+            (media_metadata_buffer *)mMetadata[index]->data;
+        nh = mNativeHandle[index];
+#ifdef USE_MEDIA_EXTENSIONS
+        packet->pHandle = nh;
+#else
+        packet->meta_handle = nh;
+#endif
+    }
+    return nh;
+}
+
+/*===========================================================================
+* FUNCTION   : closeNativeHandle
+*
+* DESCRIPTION: close video native handle
+*
+* PARAMETERS :
+*   @opaque  : ptr to video frame to be returned
+*
+* RETURN     : int32_t type of status
+*              NO_ERROR  -- success
+*              none-zero failure code
+*==========================================================================*/
+int QCameraVideoMemory::closeNativeHandle(const void *data, bool metadata)
+{
+    int32_t rc = NO_ERROR;
+
+#ifdef USE_MEDIA_EXTENSIONS
+    camera_memory_t *video_mem = (camera_memory_t *)data;
+
+    if(video_mem == NULL) {
+        ALOGE("video_mem NULL. Failed");
+        return BAD_VALUE;
+    }
+    if (metadata) {
+        media_metadata_buffer *packet =
+            (media_metadata_buffer *)video_mem->data;
+        if (packet->eType == kMetadataBufferTypeNativeHandleSource) {
+            native_handle_close(packet->pHandle);
+            native_handle_delete(packet->pHandle);
+            packet->pHandle = NULL;
+        }
+    } else {
+        ALOGE("Not of type video meta buffer. Failed");
+        return BAD_VALUE;
+    }
+#endif
+    return rc;
 }
 
 /*===========================================================================

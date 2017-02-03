@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015, The Linux Foundataion. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundataion. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -220,10 +220,13 @@ public:
     int convCamtoOMXFormat(cam_format_t format);
     int getUsage(){return mUsage;};
     int getFormat(){return mFormat;};
+    native_handle_t *updateNativeHandle(uint32_t index, bool metadata = true);
+    static int closeNativeHandle(const void *data, bool metadata = true);
 private:
     camera_memory_t *mMetadata[MM_CAMERA_MAX_NUM_FRAMES];
     uint8_t mMetaBufCount;
     int mUsage, mFormat;
+    native_handle_t *mNativeHandle[MM_CAMERA_MAX_NUM_FRAMES];
 };
 
 

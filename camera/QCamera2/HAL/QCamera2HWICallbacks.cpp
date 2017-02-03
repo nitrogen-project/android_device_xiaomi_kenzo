@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015, The Linux Foundataion. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundataion. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are
@@ -34,7 +34,6 @@
 #include <sys/stat.h>
 #include <utils/Errors.h>
 #include <utils/Timers.h>
-#include <QComOMXMetadata.h>
 #include "QCamera2HWI.h"
 
 namespace qcamera {
@@ -1352,6 +1351,8 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
                                                         void *userdata)
 {
     ATRACE_CALL();
+    QCameraVideoMemory *videoMemObj = NULL;
+
     CDBG_HIGH("[KPI Perf] %s : BEGIN", __func__);
     QCamera2HardwareInterface *pme = (QCamera2HardwareInterface *)userdata;
     if (pme == NULL ||
@@ -1386,11 +1387,12 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
         timeStamp = timeStamp - pme->mBootToMonoTimestampOffset;
         CDBG("Send Video frame to services/encoder TimeStamp : %lld",
             timeStamp);
-        QCameraMemory *videoMemObj = (QCameraMemory *)frame->mem_info;
+        videoMemObj = (QCameraVideoMemory *)frame->mem_info;
         camera_memory_t *video_mem = NULL;
         if (NULL != videoMemObj) {
             video_mem = videoMemObj->getMemory(frame->buf_idx,
                     (pme->mStoreMetaDataInFrame > 0)? true : false);
+            videoMemObj->updateNativeHandle(frame->buf_idx);
         }
         if (NULL != videoMemObj && NULL != video_mem) {
             pme->dumpFrameToFile(stream, frame, QCAMERA_DUMP_FRM_VIDEO);
@@ -1410,23 +1412,13 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
             }
         }
     } else {
-        QCameraMemory *videoMemObj = (QCameraMemory *)frame->mem_info;
+        videoMemObj = (QCameraVideoMemory *)frame->mem_info;
         camera_memory_t *video_mem = NULL;
         native_handle_t *nh = NULL;
         int fd_cnt = frame->user_buf.bufs_used;
         if (NULL != videoMemObj) {
             video_mem = videoMemObj->getMemory(frame->buf_idx, true);
-            if (video_mem != NULL) {
-                struct encoder_media_buffer_type * packet =
-                        (struct encoder_media_buffer_type *)video_mem->data;
-                // fd cnt => Number of buffer FD's and buffer for offset, size, timestamp
-                packet->meta_handle = native_handle_create(
-                        fd_cnt, (VIDEO_METADATA_NUM_INTS * fd_cnt));
-                packet->buffer_type = kMetadataBufferTypeCameraSource;
-                nh = const_cast<native_handle_t *>(packet->meta_handle);
-            } else {
-                ALOGE("%s video_mem NULL", __func__);
-            }
+            nh = videoMemObj->updateNativeHandle(frame->buf_idx);
         } else {
             ALOGE("%s videoMemObj NULL", __func__);
         }
