@@ -197,9 +197,11 @@ public:
     static void releaseNotifications(void *data, void *user_data);
     static bool matchSnapshotNotifications(void *data, void *user_data);
     static bool matchPreviewNotifications(void *data, void *user_data);
+#ifdef USE_MEDIA_EXTENSIONS
     static bool matchTimestampNotifications(void *data, void *user_data);
-    virtual int32_t flushPreviewNotifications();
     virtual int32_t flushVideoNotifications();
+#endif
+    virtual int32_t flushPreviewNotifications();
 private:
 
     camera_notify_callback         mNotifyCb;
@@ -767,7 +769,6 @@ private:
     uint32_t mSurfaceStridePadding;
 
     QCameraMemory *mMetadataMem;
-    QCameraVideoMemory *mVideoMem;
 
     static uint32_t sNextJobId;
 

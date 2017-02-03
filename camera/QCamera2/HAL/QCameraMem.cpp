@@ -1266,7 +1266,9 @@ QCameraVideoMemory::QCameraVideoMemory(camera_request_memory memory,
     : QCameraStreamMemory(memory, cached)
 {
     memset(mMetadata, 0, sizeof(mMetadata));
+#ifdef USE_MEDIA_EXTENSIONS
     memset(mNativeHandle, 0, sizeof(mNativeHandle));
+#endif
     mMetaBufCount = 0;
     mBufType = bufType;
     //Set Default color conversion format
@@ -1317,7 +1319,19 @@ int QCameraVideoMemory::allocate(uint8_t count, size_t size, uint32_t isSecure)
             return rc;
         }
         for (int i = 0; i < count; i ++) {
-            native_handle_t *nh =  mNativeHandle[i];
+            native_handle_t *nh = NULL;
+#ifdef USE_MEDIA_EXTENSIONS
+            nh =  mNativeHandle[i];
+#else
+            struct encoder_media_buffer_type * packet =
+                    (struct encoder_media_buffer_type *)mMetadata[i]->data;
+            /*data[0] => FD data[1] => OFFSET data[2] => SIZE data[3] => USAGE
+            data[4] => TIMESTAMP data[5] => FORMAT*/
+            packet->meta_handle = native_handle_create(1, VIDEO_METADATA_NUM_INTS+
+                                                      VIDEO_METADATA_NUM_COMMON_INTS);
+            packet->buffer_type = kMetadataBufferTypeCameraSource;
+            nh = const_cast<native_handle_t *>(packet->meta_handle);
+#endif
             if (!nh) {
                 ALOGE("%s: Error in getting video native handle", __func__);
                 ATRACE_END();
@@ -1377,16 +1391,19 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
             }
             media_metadata_buffer * packet =
                     (media_metadata_buffer*)mMetadata[i]->data;
-
-            mNativeHandle[i] = native_handle_create(1, VIDEO_METADATA_NUM_INTS);
+            native_handle_t * nh = NULL;
 #ifdef USE_MEDIA_EXTENSIONS
+            mNativeHandle[i] = native_handle_create(1, VIDEO_METADATA_NUM_INTS+VIDEO_METADATA_NUM_COMMON_INTS);
             packet->eType = kMetadataBufferTypeNativeHandleSource;
-            packet->pHandle = mNativeHandle[i];
+            packet->pHandle = NULL;
+            nh = mNativeHandle[i];
 #else
-            packet->meta_handle = mNativeHandle[i];
+            /*data[0] => FD data[1] => OFFSET data[2] => SIZE data[3] => USAGE
+            data[4] => TIMESTAMP data[5] => FORMAT*/
+            packet->meta_handle = native_handle_create(1, VIDEO_METADATA_NUM_INTS);
             packet->buffer_type = kMetadataBufferTypeCameraSource;
+            nh = const_cast<native_handle_t *>(packet->meta_handle);
 #endif
-            native_handle_t * nh = mNativeHandle[i];
             if (!nh) {
                 ALOGE("%s: Error in getting video native handle", __func__);
                 ATRACE_END();
@@ -1398,6 +1415,7 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
             nh->data[3] = usage;
             nh->data[4] = 0; //dummy value for timestamp in non-batch mode
             nh->data[5] = mFormat;
+            nh->data[6] = i;//buffer index
         }
     }
     mBufferCount = (uint8_t)(mBufferCount + count);
@@ -1421,8 +1439,10 @@ int QCameraVideoMemory::allocateMore(uint8_t count, size_t size)
 int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
 {
     int rc = NO_ERROR;
+    //numOfInts(6): offset, size, usage, timestamp, format, buffer index
+    //totalInts = numOfInts*numFDs
     int numFDs = 1;
-    int numInts = 5;
+    int totalInts = 6;
 
     for (int i = 0; i < buf_cnt; i++) {
         mMetadata[i] = mGetMemory(-1,
@@ -1430,15 +1450,19 @@ int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
         if (!mMetadata[i]) {
             ALOGE("allocation of video metadata failed.");
             for (int j = (i - 1); j >= 0; j--) {
+#ifdef USE_MEDIA_EXTENSIONS
                 if (NULL != mNativeHandle[j]) {
                     native_handle_delete(mNativeHandle[j]);
                 }
+#endif
                 mMetadata[j]->release(mMetadata[j]);
             }
             return NO_MEMORY;
         }
+
+#ifdef USE_MEDIA_EXTENSIONS
         media_metadata_buffer *packet = (media_metadata_buffer *)mMetadata[i]->data;
-        mNativeHandle[i] = native_handle_create(numFDs, (numInts * numFDs));
+        mNativeHandle[i] = native_handle_create(numFDs, totalInts+VIDEO_METADATA_NUM_COMMON_INTS);
         if (mNativeHandle[i] == NULL) {
             ALOGE("Error in getting video native handle");
             for (int j = (i - 1); j >= 0; j--) {
@@ -1449,10 +1473,13 @@ int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
                 mMetadata[j]->release(mMetadata[j]);
             }
             return NO_MEMORY;
+        } else {
+            //assign buffer index to native handle.
+            native_handle_t *nh =  mNativeHandle[i];
+            nh->data[numFDs + totalInts] = i;
         }
-#ifdef USE_MEDIA_EXTENSIONS
         packet->eType = kMetadataBufferTypeNativeHandleSource;
-        packet->pHandle = mNativeHandle[i];
+        packet->pHandle = NULL;
 #else
         packet->buffer_type = kMetadataBufferTypeCameraSource;
         packet->meta_handle = mNativeHandle[i];
@@ -1474,6 +1501,7 @@ int QCameraVideoMemory::allocateMeta(uint8_t buf_cnt)
 void QCameraVideoMemory::deallocateMeta()
 {
     for (int i = 0; i < mMetaBufCount; i ++) {
+#ifdef USE_MEDIA_EXTENSIONS
         native_handle_t *nh = mNativeHandle[i];
         if (NULL != nh) {
             if (native_handle_delete(nh)) {
@@ -1483,6 +1511,7 @@ void QCameraVideoMemory::deallocateMeta()
             ALOGE("native handle not available");
         }
         mNativeHandle[i] = NULL;
+#endif
         mMetadata[i]->release(mMetadata[i]);
         mMetadata[i] = NULL;
     }
@@ -1545,14 +1574,36 @@ camera_memory_t *QCameraVideoMemory::getMemory(uint32_t index,
     if (index >= mMetaBufCount || (!metadata && index >= mBufferCount))
         return NULL;
 
-    if (metadata)
+    if (metadata) {
+#ifdef USE_MEDIA_EXTENSIONS
+        int i;
+        media_metadata_buffer *packet = NULL;
+
+        for (i = 0; i < mMetaBufCount; i++) {
+            packet = (media_metadata_buffer *)mMetadata[i]->data;
+            if (packet != NULL && packet->pHandle == NULL) {
+                packet->pHandle = mNativeHandle[index];
+                break;
+            }
+        }
+        if (i < mMetaBufCount) {
+            return mMetadata[i];
+        } else {
+            CDBG_HIGH("No free video meta memory");
+            return NULL;
+        }
+#else
         return mMetadata[index];
-    else
+#endif
+    } else {
         return mCameraMemory[index];
+    }
 }
 
+#ifdef USE_MEDIA_EXTENSIONS
+
 /*===========================================================================
-* FUNCTION   : updateNativeHandle
+* FUNCTION   : getNativeHandle
 
 * DESCRIPTION: Updating native handle pointer
 *
@@ -1563,24 +1614,12 @@ camera_memory_t *QCameraVideoMemory::getMemory(uint32_t index,
 * RETURN     : camera native handle ptr
 *              NULL if not supported or failed
 *==========================================================================*/
-native_handle_t *QCameraVideoMemory::updateNativeHandle(uint32_t index, bool metadata)
+native_handle_t *QCameraVideoMemory::getNativeHandle(uint32_t index, bool metadata)
 {
     if (index >= mMetaBufCount || (!metadata && index >= mBufferCount)) {
         return NULL;
     }
-
-    native_handle_t *nh = NULL;
-    if (metadata && mMetadata[index] != NULL) {
-        media_metadata_buffer *packet =
-            (media_metadata_buffer *)mMetadata[index]->data;
-        nh = mNativeHandle[index];
-#ifdef USE_MEDIA_EXTENSIONS
-        packet->pHandle = nh;
-#else
-        packet->meta_handle = nh;
-#endif
-    }
-    return nh;
+    return mNativeHandle[index];
 }
 
 /*===========================================================================
@@ -1600,27 +1639,21 @@ int QCameraVideoMemory::closeNativeHandle(const void *data, bool metadata)
     int32_t rc = NO_ERROR;
     int32_t index = -1;
 
-#ifdef USE_MEDIA_EXTENSIONS
-
-
-     camera_memory_t *video_mem = NULL;
-
     if (metadata) {
-        index = getMatchBufIndex(data, metadata);
-        if (index < 0) {
-            ALOGE("Invalid buffer");
-            return BAD_VALUE;
-        }
-        video_mem = getMemory(index, metadata);
-        media_metadata_buffer * packet = NULL;
-        if (video_mem != NULL) {
-           packet = (media_metadata_buffer *)video_mem->data;
-        }
+        const media_metadata_buffer *packet = (const media_metadata_buffer*)data;
         if (packet != NULL && packet->eType ==
-            kMetadataBufferTypeNativeHandleSource) {
+            kMetadataBufferTypeNativeHandleSource &&
+            (packet->pHandle != NULL)) {
             native_handle_close(packet->pHandle);
             native_handle_delete(packet->pHandle);
-            packet->pHandle = NULL;
+            for (int i = 0; i < mMetaBufCount; i++) {
+                if(mMetadata[i]->data == data) {
+                    media_metadata_buffer *mem =
+                    (media_metadata_buffer *)mMetadata[i]->data;
+                    mem->pHandle = NULL;
+                    break;
+                }
+            }
         } else {
             ALOGE("Invalid Data. Could not release");
             return BAD_VALUE;
@@ -1628,9 +1661,10 @@ int QCameraVideoMemory::closeNativeHandle(const void *data, bool metadata)
     } else {
         ALOGW("Warning: Not of type video meta buffer");
     }
-#endif
     return rc;
 }
+
+#endif
 
 /*===========================================================================
  * FUNCTION   : getMatchBufIndex
@@ -1650,12 +1684,31 @@ int QCameraVideoMemory::getMatchBufIndex(const void *opaque,
     int index = -1;
 
     if (metadata) {
+#ifdef USE_MEDIA_EXTENSIONS
+        const media_metadata_buffer *packet =
+            (const media_metadata_buffer *)opaque;
+        native_handle_t *nh = NULL;
+        if ((packet != NULL) && (packet->eType ==
+                kMetadataBufferTypeNativeHandleSource)
+                && (packet->pHandle)) {
+            nh = (native_handle_t *)packet->pHandle;
+            int mCommonIdx = (nh->numInts + nh->numFds -
+                                VIDEO_METADATA_NUM_COMMON_INTS);
+            for (int i = 0; i < mMetaBufCount; i++) {
+                if(nh->data[mCommonIdx] == mNativeHandle[i]->data[mCommonIdx]) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+#else
         for (int i = 0; i < mMetaBufCount; i++) {
             if (mMetadata[i]->data == opaque) {
                 index = i;
                 break;
             }
         }
+#endif
     } else {
         for (int i = 0; i < mBufferCount; i++) {
             if (mCameraMemory[i]->data == opaque) {

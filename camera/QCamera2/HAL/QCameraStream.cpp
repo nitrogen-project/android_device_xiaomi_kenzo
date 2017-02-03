@@ -1141,10 +1141,16 @@ int32_t QCameraStream::bufDone(const void *opaque, bool isMetaData)
 {
     int32_t rc = NO_ERROR;
     int index;
+#ifdef USE_MEDIA_EXTENSIONS
+    QCameraVideoMemory *lVideoMem = NULL;
+#endif
 
     if (mStreamInfo != NULL
             && mStreamInfo->streaming_mode == CAM_STREAMING_MODE_BATCH) {
         index = mStreamBatchBufs->getMatchBufIndex(opaque, TRUE);
+#ifdef USE_MEDIA_EXTENSIONS
+        lVideoMem = (QCameraVideoMemory *)mStreamBatchBufs;
+#endif
         if (index == -1 || index >= mNumBufs || mBufDefs == NULL) {
             ALOGE("%s: Cannot find buf for opaque data = %p", __func__, opaque);
             return BAD_INDEX;
@@ -1164,6 +1170,9 @@ int32_t QCameraStream::bufDone(const void *opaque, bool isMetaData)
         }
     } else {
         index = mStreamBufs->getMatchBufIndex(opaque, isMetaData);
+#ifdef USE_MEDIA_EXTENSIONS
+        lVideoMem = (QCameraVideoMemory *)mStreamBufs;
+#endif
         if (index == -1 || index >= mNumBufs || mBufDefs == NULL) {
             ALOGE("%s: Cannot find buf for opaque data = %p", __func__, opaque);
             return BAD_INDEX;
@@ -1171,6 +1180,18 @@ int32_t QCameraStream::bufDone(const void *opaque, bool isMetaData)
         CDBG_HIGH("%s: Buffer Index = %d, Frame Idx = %d", __func__, index,
                 mBufDefs[index].frame_idx);
     }
+#ifdef USE_MEDIA_EXTENSIONS
+    //Close and delete duplicated native handle and FD's.
+    if (lVideoMem != NULL) {
+        rc = lVideoMem->closeNativeHandle(opaque, isMetaData);
+        if (rc != NO_ERROR) {
+            CDBG_HIGH("Invalid video metadata");
+            return rc;
+        }
+    } else {
+        CDBG_HIGH("Possible FD leak. Release recording called after stop");
+    }
+#endif
     rc = bufDone((uint32_t)index);
     return rc;
 }

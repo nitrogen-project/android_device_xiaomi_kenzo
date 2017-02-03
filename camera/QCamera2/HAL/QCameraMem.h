@@ -45,6 +45,10 @@ extern "C" {
 //OFFSET, SIZE, USAGE, TIMESTAMP, FORMAT
 #define VIDEO_METADATA_NUM_INTS 5
 
+#ifdef USE_MEDIA_EXTENSIONS
+#define VIDEO_METADATA_NUM_COMMON_INTS   1
+#endif
+
 namespace qcamera {
 
 class QCameraMemoryPool;
@@ -220,13 +224,17 @@ public:
     int convCamtoOMXFormat(cam_format_t format);
     int getUsage(){return mUsage;};
     int getFormat(){return mFormat;};
-    native_handle_t *updateNativeHandle(uint32_t index, bool metadata = true);
+#ifdef USE_MEDIA_EXTENSIONS
+    native_handle_t *getNativeHandle(uint32_t index, bool metadata = true);
     int closeNativeHandle(const void *data, bool metadata = true);
+#endif
 private:
     camera_memory_t *mMetadata[MM_CAMERA_MAX_NUM_FRAMES];
     uint8_t mMetaBufCount;
     int mUsage, mFormat;
+#ifdef USE_MEDIA_EXTENSIONS
     native_handle_t *mNativeHandle[MM_CAMERA_MAX_NUM_FRAMES];
+#endif
 };
 
 
