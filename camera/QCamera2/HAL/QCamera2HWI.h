@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015, The Linux Foundataion. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundataion. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -767,6 +767,7 @@ private:
     uint32_t mSurfaceStridePadding;
 
     QCameraMemory *mMetadataMem;
+    QCameraVideoMemory *mVideoMem;
 
     static uint32_t sNextJobId;
 
