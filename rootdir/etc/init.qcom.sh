@@ -454,7 +454,7 @@ case "$emmc_boot"
 esac
 
 #
-# Make modem config folder and copy firmware config to that folder
+# Make modem config folder and copy firmware config to that folder for RIL
 #
 rm -rf /data/misc/radio/modem_config
 mkdir /data/misc/radio/modem_config

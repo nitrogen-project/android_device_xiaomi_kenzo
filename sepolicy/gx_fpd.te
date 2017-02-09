@@ -1,5 +1,7 @@
 type gx_fpd, domain;
 type gx_fpd_exec, exec_type, file_type;
+type gx_fpd_device, dev_type;
+type gx_fpd_data_file, file_type, data_file_type;
 
 # gx_fpd
 init_daemon_domain(gx_fpd)
@@ -9,7 +11,7 @@ binder_use(gx_fpd)
 allow gx_fpd fingerprintd_service:service_manager { add find };
 
 # allow HAL module to read dir contents
-allow gx_fpd gx_fpd_data_file:file { create_file_perms };
+allow gx_fpd gx_fpd_data_file:file create_file_perms;
 
 # allow HAL module to read/write/unlink contents of this dir
 allow gx_fpd gx_fpd_data_file:dir rw_dir_perms;

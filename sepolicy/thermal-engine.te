@@ -1,0 +1,6 @@
+type thermal_data_file, file_type, data_file_type;
+type_transition thermal-engine system_data_file:dir thermal_data_file;
+type_transition thermal-engine system_data_file:file thermal_data_file;
+
+allow thermal-engine system_data_file:dir rw_dir_perms;
+allow thermal-engine thermal_data_file:file create_file_perms;

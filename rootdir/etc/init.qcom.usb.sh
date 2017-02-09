@@ -263,3 +263,4 @@ case "$soc_id" in
 		setprop sys.usb.rps_mask 4
 	;;
 esac
+

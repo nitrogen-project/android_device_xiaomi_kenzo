@@ -34,37 +34,20 @@ on early-init
     symlink /data/tombstones /tombstones
     mkdir /dsp 0771 media media
 
-on post-fs
-    export LD_PRELOAD libNimsWrap.so
-
 on init
     mkdir /cust 0771 system system
 
 on fs
-    wait /dev/block/bootdevice
+    wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
+
     mount_all fstab.qcom
 
-    # Keeping following partitions outside fstab file. As user may not have
-    # these partition flashed on the device. Failure to mount any partition in fstab file
-    # results in failure to launch late-start class.
-
-    wait /dev/block/bootdevice/by-name/cache
-    mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid nodev barrier=1
-
-    wait /dev/block/bootdevice/by-name/persist
-    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
+on post-fs
     mkdir /persist/data 0700 system system
     restorecon_recursive /persist
-
-    wait /dev/block/bootdevice/by-name/dsp
-    mount ext4 /dev/block/bootdevice/by-name/dsp /dsp nosuid nodev barrier=1
     restorecon_recursive /dsp
 
-    wait /dev/block/bootdevice/by-name/modem
-    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro context=u:object_r:firmware_file:s0,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
-    #write /sys/kernel/boot_adsp/boot 1
-
-on post-fs
     # We chown/chmod /cust again so because mount is run as root + defaults
     chown system system /cust
     chmod 0771 /cust
@@ -73,6 +56,9 @@ on post-fs
 
     # create the lost+found directories, so as to enforce our permissions
     mkdir /cust/lost+found 0770 root root
+
+    start qseecomd
+    exec - root root system -- /init.qcom.qseecomd.sh
 
 on post-fs-data
     mkdir /data/tombstones 0771 system system
@@ -84,29 +70,34 @@ on post-fs-data
     mkdir /persist/data/tz 0700 system system
     mkdir /data/misc/dts 0770 media audio
     mkdir /data/misc/audio_pp 0771 media audio
+    mkdir /data/thermal 0771 system system
     mkdir /data/fpc 0700 system system
     mkdir /data/goodix 0700 system system
+
+    # access permission for led torch
+    chmod 0666 /sys/class/leds/led:torch_0/brightness
+    chmod 0666 /sys/class/leds/led:torch_1/brightness
+    chmod 0666 /sys/class/leds/led:switch/brightness
 
 #start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
-    writepid /dev/cpuset/system-background/tasks
+    writepid /dev/cpuset/camera-daemon/tasks
 
 on init
-   write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
+    write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
 
 #enable zram
 on property:ro.config.zram=true
     swapon_all fstab.qcom
     write /proc/sys/vm/swappiness 100
-    setprop persist.camera.stats.test 5
 
 service qfp-daemon /system/bin/qfp-daemon
-   class late_start
-   user system
-   group system drmrpc
+    class late_start
+    user system
+    group system drmrpc
 
 # Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
@@ -115,66 +106,49 @@ on property:persist.usb.chgdisabled=1
 on property:persist.usb.chgdisabled=0
     write /sys/class/power_supply/battery/charging_enabled 1
 
-service qrngd /system/bin/qrngd -f
-   class main
-   user root
-   group root
-
-service qrngp /system/bin/qrngp -f
-   class main
-   user root
-   group root
-   oneshot
-   disabled
-
-on property:sys.boot_completed=1
-   start qrngp
-
 service qseecomd /system/bin/qseecomd
-   class core
-   user root
-   group root
-
-#service aostlmd /system/bin/aostlmd
-#   class late_start
-#   user system
-#   group system net_raw
+    class core
+    user root
+    group root
+    writepid /dev/cpuset/system-background/tasks
 
 service perfd /system/vendor/bin/perfd
-   class main
-   user root
-   disabled
-   writepid /dev/cpuset/system-background/tasks
+    class main
+    user root
+    disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service seempd /system/bin/seempd
-   class late_start
-   user system
-   group system
-   socket seempdw dgram 0666 system system
-   oneshot
+    class late_start
+    user system
+    group system
+    socket seempdw dgram 0666 system system
+    oneshot
 
 service thermal-engine /system/vendor/bin/thermal-engine
-   class main
-   user root
-   socket thermal-send-client stream 0666 system system
-   socket thermal-recv-client stream 0660 system system
-   socket thermal-recv-passive-client stream 0666 system system
-   group root
+    class main
+    user root
+    socket thermal-send-client stream 0666 system system
+    socket thermal-recv-client stream 0660 system system
+    socket thermal-recv-passive-client stream 0666 system system
+    group root
+    writepid /dev/cpuset/system-background/tasks
 
 service time_daemon /system/bin/time_daemon
-   class late_start
-   user root
-   group root
+    class late_start
+    user root
+    group root radio
+    writepid /dev/cpuset/system-background/tasks
 
 service audiod /system/bin/audiod
-   class late_start
-   user system
-   group system
+    class late_start
+    user system
+    group system
 
 on boot
     start rmt_storage
     insmod /system/lib/modules/adsprpc.ko
-# access permission for secure touch
+    # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
     chmod 0660 /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
@@ -184,8 +158,8 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch
     write /proc/sys/kernel/sched_boost 1
-	chown system system  /dev/goodix_fp
-	chmod 0644 /dev/goodix_fp
+    chown system system  /dev/goodix_fp
+    chmod 0644 /dev/goodix_fp
 	
 service wcnss-service /system/bin/wcnss_service
     class main
@@ -197,13 +171,13 @@ service imsqmidaemon /system/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
-    group radio net_raw log diag
+    group radio log diag
 
 service imsdatadaemon /system/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
-    group system wifi radio inet net_raw log diag net_admin
+    group system wifi radio inet log diag
     disabled
 
 on property:sys.ims.QMI_DAEMON_STATUS=1
@@ -213,13 +187,13 @@ service ims_rtp_daemon /system/bin/ims_rtp_daemon
    class main
    user system
    socket ims_rtpd stream 0660 system radio
-   group radio net_raw diag diag inet log
+   group radio diag inet log
    disabled
 
 service imscmservice /system/bin/imscmservice
    class main
    user system
-   group radio net_raw diag diag log
+   group radio diag inet log
    disabled
 
 on property:sys.ims.DATA_DAEMON_STATUS=1
@@ -239,13 +213,36 @@ on property:init.svc.surfaceflinger=stopped
 on property:init.svc.surfaceflinger=running
     start ppd
 
+on property:init.svc.surfaceflinger=restarting
+    stop ppd
+
+on property:init.svc.zygote=stopped
+    stop ppd
+
+on property:init.svc.zygote=running
+    start ppd
+
+on property:init.svc.zygote=restarting
+    stop ppd
+
 on charger
-    wait /dev/block/bootdevice/by-name/system
+    wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
+
     mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
-    load_all_props
-    setprop persist.sys.usb.config mass_storage
+    write /sys/module/lpm_levels/parameters/sleep_disabled 0
+    write /sys/module/lpm_levels/system/system-cci-pc/idle_enabled 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "userspace"
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 300000
+    write /sys/devices/system/cpu/cpu1/online 1
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "userspace"
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_setspeed 300000
+    write /sys/devices/system/cpu/cpu2/online 0
+    write /sys/devices/system/cpu/cpu3/online 0
+    write /sys/devices/system/cpu/cpu4/online 0
+    write /sys/devices/system/cpu/cpu5/online 0
+    write /sys/module/msm_thermal/parameters/enabled "N"
     start qcom-post-boot
-    setprop persist.sys.usb.config mass_storage
     start hvdcp_opti
 
 service dts_configurator /system/bin/dts_configurator
@@ -270,58 +267,23 @@ service hvdcp_opti /system/bin/hvdcp_opti
     user root
     group root
 
-on property:init.svc.dts_configurator=stopped
-    start dtseagleservice
-
-on property:persist.sys.display_prefer=0
-    write /sys/class/graphics/fb0/msm_fb_dispparam 0
-
-on property:persist.sys.display_prefer=1
-    write /sys/class/graphics/fb0/msm_fb_dispparam 1
-
-on property:persist.sys.display_prefer=2
-    write /sys/class/graphics/fb0/msm_fb_dispparam 2
-
-on property:persist.sys.display_prefer=3
-    write /sys/class/graphics/fb0/msm_fb_dispparam 3
-
-on property:persist.sys.display_ce=10
-    write /sys/class/graphics/fb0/msm_fb_dispparam 240
-
-on property:persist.sys.display_ce=11
-    write /sys/class/graphics/fb0/msm_fb_dispparam 16
-
-on property:persist.sys.display_eyecare=0
-    write /sys/class/graphics/fb0/msm_fb_eyecare 0
-
-on property:persist.sys.display_eyecare=1
-    write /sys/class/graphics/fb0/msm_fb_eyecare 1
-    
-on property:persist.sys.display_eyecare=2
-    write /sys/class/graphics/fb0/msm_fb_eyecare 2
-
-on property:persist.sys.display_eyecare=3
-    write /sys/class/graphics/fb0/msm_fb_eyecare 3
-
-on property:persist.sys.display_eyecare=4
-    write /sys/class/graphics/fb0/msm_fb_eyecare 4
-
- on property:persist.sys.display_eyecare=5
-    write /sys/class/graphics/fb0/msm_fb_eyecare 5
-
- on property:persist.sys.display_eyecare=6
-    write /sys/class/graphics/fb0/msm_fb_eyecare 6
-
- on property:persist.sys.display_eyecare=7
-    write /sys/class/graphics/fb0/msm_fb_eyecare 7
-
- on property:persist.sys.display_eyecare=8
-    write /sys/class/graphics/fb0/msm_fb_eyecare 8
-
 service per_mgr /system/bin/pm-service
     class core
     user system
     group system net_raw
+    writepid /dev/cpuset/system-background/tasks
+
+service per_proxy /system/bin/pm-proxy
+    class core
+    user system
+    group system
+    disabled
+
+on property:init.svc.per_mgr=running
+    start per_proxy
+
+on property:sys.shutdown.requested=*
+    stop per_proxy
 
 service energy-awareness /system/bin/energy-awareness
     class main
@@ -334,23 +296,37 @@ on boot
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/fw_name PR1702898-s3528t_00260005_00380008.img
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/update_fw 1
 
+    # add a cpuset for the camera daemon
+    # we want all the little cores for camera
+    mkdir /dev/cpuset/camera-daemon
+    write /dev/cpuset/camera-daemon/cpus 0
+    write /dev/cpuset/camera-daemon/mems 0
+    chown system system /dev/cpuset/camera-daemon
+    chown system system /dev/cpuset/camera-daemon/tasks
+    chmod 0664 /dev/cpuset/camera-daemon/tasks
+
     # update foreground cpuset now that processors are up
-    write /dev/cpuset/foreground/cpus 0-5
+    # reserve CPU 3 for the top app and camera daemon
+    write /dev/cpuset/foreground/cpus 0-2,4-5
     write /dev/cpuset/foreground/boost/cpus 4-5
     write /dev/cpuset/background/cpus 0
-    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/system-background/cpus 0-2
+    write /dev/cpuset/top-app/cpus 0-5
+    write /dev/cpuset/camera-daemon/cpus 0-3
 
 service fingerprintd /system/bin/fingerprintd   
     class late_start 
     socket fpce stream 0666 system system
     user system
     group system sdcard_rw
+    writepid /dev/cpuset/system-background/tasks
 
 service gx_fpd /system/bin/gx_fpd
     class late_start
     user system
     group system
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 #on property:ro.boot.fpsensor=gdx
 #    start gx_fpd
@@ -363,3 +339,4 @@ on property:persist.sys.fp.goodix=1
 
 service mtservice /system/bin/mtd
     class late_start
+

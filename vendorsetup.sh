@@ -1,1 +1,1 @@
-add_lunch_combo cm_kenzo-userdebug
+add_lunch_combo aosp_kenzo-userdebug
