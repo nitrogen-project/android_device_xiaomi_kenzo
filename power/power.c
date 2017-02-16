@@ -436,10 +436,15 @@ void set_interactive(struct power_module *module, int on)
     saved_interactive_mode = !!on;
 }
 
+void __attribute__ ((weak)) set_feature(struct power_module *module, 
+		feature_t feature, int state)
+{
+}
+
 struct power_module HAL_MODULE_INFO_SYM = {
     .common = {
         .tag = HARDWARE_MODULE_TAG,
-        .module_api_version = POWER_MODULE_API_VERSION_0_2,
+        .module_api_version = POWER_MODULE_API_VERSION_0_3,
         .hal_api_version = HARDWARE_HAL_API_VERSION,
         .id = POWER_HARDWARE_MODULE_ID,
         .name = "QCOM Power HAL",
@@ -450,4 +455,5 @@ struct power_module HAL_MODULE_INFO_SYM = {
     .init = power_init,
     .powerHint = power_hint,
     .setInteractive = set_interactive,
+    .setFeature = set_feature,
 };

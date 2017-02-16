@@ -189,3 +189,43 @@ static void process_video_encode_hint(void *metadata)
     }
     return;
 }
+
+#define DT2W_PATH "/sys/android_touch/doubletap2wake"
+#define S2W_PATH "/sys/android_touch/sweep2wake"
+#define VIB_PATH "/sys/android_touch/vib_strength"
+
+void set_feature(struct power_module *module, feature_t feature, int state)
+{
+    if (feature == POWER_FEATURE_DOUBLE_TAP_TO_WAKE) {
+        int mode, fd;
+        char buffer[16];
+
+        mode = property_get_int32("persist.wake_gesture.mode", 0);
+        if (mode < 0)
+        	mode = 0;
+
+        fd = open(DT2W_PATH, O_WRONLY);
+        if (fd >= 0) {
+        	snprintf(buffer, 16, "%d", state ? !mode : 0);
+            write(fd, buffer, strlen(buffer) + 1);
+            close(fd);
+        }
+
+        fd = open(S2W_PATH, O_WRONLY);
+        if (fd >= 0) {
+        	snprintf(buffer, 16, "%d", state ? mode : 0);
+            write(fd, buffer, strlen(buffer) + 1);
+            close(fd);
+        }
+
+        mode = property_get_int32("persist.wake_gesture.vib_strength", -1);
+        if (mode >= 0) {
+        	fd = open(VIB_PATH, O_WRONLY);
+            if (fd >= 0) {
+        	    snprintf(buffer, 16, "%d", mode);
+                write(fd, buffer, strlen(buffer) + 1);
+                close(fd);
+            }
+        }
+    }
+}
