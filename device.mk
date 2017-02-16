@@ -318,6 +318,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     device/xiaomi/kenzo/configs/thermal-engine-8956.conf:system/etc/thermal-engine-8956.conf
 
+# for off charging mode
+PRODUCT_PACKAGES += \
+    charger_res_images
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     e2fsck \
