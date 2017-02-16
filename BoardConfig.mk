@@ -124,6 +124,7 @@ BOARD_USES_QCNE := true
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
+BOARD_HAL_STATIC_LIBRARIES += libhealthd.msm8952
 
 # Display
 BOARD_EGL_CFG := $(DEVICE_PATH)/egl.cfg
