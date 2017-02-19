@@ -294,6 +294,7 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
+    libril_proxy \
     librmnetctl \
     libxml2
 
