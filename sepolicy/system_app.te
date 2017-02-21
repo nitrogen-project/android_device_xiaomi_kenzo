@@ -1,0 +1,2 @@
+allow system_app sysfs_led:dir r_dir_perms;
+allow system_app sysfs_led:file rw_file_perms;
