@@ -78,8 +78,7 @@ static void RIL_OnRequestComplete(RIL_Token t, RIL_Errno e,
                 *activityProxy = *activity;
                 activityProxy->sleep_mode_time_ms = 
                 	activity->sleep_mode_time_ms - s_rilActivity.sleep_mode_time_ms;
-                activityProxy->idle_mode_time_ms = 
-                	s_rilActivity.idle_mode_time_ms - activity->idle_mode_time_ms;
+                activityProxy->idle_mode_time_ms = 0;
                 responseProxy = activityProxy;
             }
             s_rilActivity = *activity;
