@@ -255,8 +255,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/hals.conf:system/etc/sensors/hals.conf
 
 # wlan driver
+PRODUCT_PACKAGES += \
+    WCNSS_cfg.dat
+
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:system/etc/wifi/WCNSS_qcom_cfg.ini \
     $(LOCAL_PATH)/wifi/WCNSS_qcom_sdio_cfg.ini:system/etc/wifi/WCNSS_qcom_sdio_cfg.ini
 
 PRODUCT_COPY_FILES += \
