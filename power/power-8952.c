@@ -49,15 +49,24 @@
 #include "performance.h"
 #include "power-common.h"
 
+#define BUS_SPEED_PATH "/sys/class/devfreq/gpubw/min_freq"
+#define GPU_MAX_FREQ_PATH "/sys/class/kgsl/kgsl-3d0/devfreq/max_freq"
+#define GPU_MIN_FREQ_PATH "/sys/class/kgsl/kgsl-3d0/devfreq/min_freq"
+
 static int saved_interactive_mode = -1;
 static int display_hint_sent;
 static int video_encode_hint_sent;
+static int sustained_performance_mode = 0;
+static int vr_mode = 0;
+static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 static void process_video_encode_hint(void *metadata);
 
 int  power_hint_override(struct power_module *module, power_hint_t hint,
         void *data)
 {
+    static int handle_hotplug = 0;
+    int resources_hotplug[] = {0x3DFF};
 
     switch(hint) {
         case POWER_HINT_VSYNC:
@@ -65,6 +74,63 @@ int  power_hint_override(struct power_module *module, power_hint_t hint,
         case POWER_HINT_VIDEO_ENCODE:
         {
             process_video_encode_hint(data);
+            return HINT_HANDLED;
+        }
+        case POWER_HINT_INTERACTION:
+        {
+            int ret;
+
+            pthread_mutex_lock(&lock);
+            if (sustained_performance_mode || vr_mode)
+                ret = HINT_HANDLED;
+            else
+                ret = HINT_NONE;
+            pthread_mutex_unlock(&lock);
+            return ret;
+        }
+        case POWER_HINT_SUSTAINED_PERFORMANCE:
+        {
+            pthread_mutex_lock(&lock);
+            if (data && sustained_performance_mode == 0) {
+                sysfs_write(GPU_MAX_FREQ_PATH, "432000000");
+                if (vr_mode == 0) {
+                    handle_hotplug = interaction_with_handle(handle_hotplug, 0,
+                                        sizeof(resources_hotplug)/sizeof(resources_hotplug[0]),
+                                        resources_hotplug);
+                }
+                sustained_performance_mode = 1;
+            } else if (!data && sustained_performance_mode == 1) {
+                sysfs_write(GPU_MAX_FREQ_PATH, "600000000");
+                if (vr_mode == 0) {
+                    release_request(handle_hotplug);
+                }
+                sustained_performance_mode = 0;
+           }
+           pthread_mutex_unlock(&lock);
+           return HINT_HANDLED;
+        }
+        break;
+        case POWER_HINT_VR_MODE:
+        {
+            pthread_mutex_lock(&lock);
+            if (data && vr_mode == 0) {
+                sysfs_write(GPU_MIN_FREQ_PATH, "432000000");
+                sysfs_write(BUS_SPEED_PATH, "2929");
+                if (sustained_performance_mode == 0) {
+                    handle_hotplug = interaction_with_handle(handle_hotplug, 0,
+                                        sizeof(resources_hotplug)/sizeof(resources_hotplug[0]),
+                                        resources_hotplug);
+                }
+                vr_mode = 1;
+            } else if (vr_mode == 1){
+                sysfs_write(GPU_MIN_FREQ_PATH, "266666667");
+                sysfs_write(BUS_SPEED_PATH, "0");
+                if (sustained_performance_mode == 0) {
+                    release_request(handle_hotplug);
+                }
+                vr_mode = 0;
+            }
+            pthread_mutex_unlock(&lock);
             return HINT_HANDLED;
         }
     }
