@@ -30,6 +30,7 @@
 #define LOG_NIDEBUG 0
 
 #include <errno.h>
+#include <inttypes.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -229,3 +230,165 @@ void set_feature(struct power_module *module, feature_t feature, int state)
         }
     }
 }
+
+#define PLATFORM_SLEEP_MODES 2
+#define XO_VOTERS 5
+#define VMIN_VOTERS 0
+
+#define RPM_PARAMETERS 4
+#define NUM_PARAMETERS 10
+
+#ifndef RPM_STAT
+#define RPM_STAT "/d/rpm_stats"
+#endif
+
+#ifndef RPM_MASTER_STAT
+#define RPM_MASTER_STAT "/d/rpm_master_stats"
+#endif
+
+/* RPM runs at 19.2Mhz. Divide by 19200 for msec */
+#define RPM_CLK 19200
+#define USINSEC 1000000L
+#define NSINUS 1000L
+
+const char *parameter_names[] = {
+    "vlow_count",
+    "accumulated_vlow_time",
+    "vmin_count",
+    "accumulated_vmin_time",
+    "xo_accumulated_duration",
+    "xo_count",
+    "xo_accumulated_duration",
+    "xo_count",
+    "xo_accumulated_duration",
+    "xo_count",
+    "xo_accumulated_duration",
+    "xo_count",
+    "xo_accumulated_duration",
+    "xo_count"};
+
+ssize_t get_number_of_platform_modes(struct power_module *module) {
+   return PLATFORM_SLEEP_MODES;
+}
+
+int get_voter_list(struct power_module *module, size_t *voter) {
+   voter[0] = XO_VOTERS;
+   voter[1] = VMIN_VOTERS;
+
+   return 0;
+}
+
+static int extract_stats(uint64_t *list, char *file,
+    unsigned int num_parameters, unsigned int index) {
+    FILE *fp;
+    ssize_t read;
+    size_t len;
+    char *line;
+    int ret;
+
+    fp = fopen(file, "r");
+    if (fp == NULL) {
+        ret = -errno;
+        ALOGE("%s: failed to open: %s", __func__, strerror(errno));
+        return ret;
+    }
+
+    for (line = NULL, len = 0;
+         ((read = getline(&line, &len, fp) != -1) && (index < num_parameters));
+         free(line), line = NULL, len = 0) {
+        uint64_t value;
+        char* offset;
+
+        size_t begin = strspn(line, " \t");
+        if (strncmp(line + begin, parameter_names[index], strlen(parameter_names[index]))) {
+            continue;
+        }
+
+        offset = memchr(line, ':', len);
+        if (!offset) {
+            continue;
+        }
+
+        if (!strcmp(file, RPM_MASTER_STAT)) {
+            /* RPM_MASTER_STAT is reported in hex */
+            sscanf(offset, ":%" SCNx64, &value);
+            /* Duration is reported in rpm SLEEP TICKS */
+            if (!strcmp(parameter_names[index], "xo_accumulated_duration")) {
+                value /= RPM_CLK;
+            }
+        } else {
+            /* RPM_STAT is reported in decimal */
+            sscanf(offset, ":%" SCNu64, &value);
+        }
+        list[index] = value;
+        index++;
+    }
+    free(line);
+
+    fclose(fp);
+    return 0;
+}
+
+int get_platform_low_power_stats(struct power_module *module,
+    power_state_platform_sleep_state_t *list) {
+    uint64_t stats[sizeof(parameter_names)] = {0};
+    int ret;
+
+    if (!list) {
+        return -EINVAL;
+    }
+
+    ret = extract_stats(stats, RPM_STAT, RPM_PARAMETERS, 0);
+
+    if (ret) {
+        return ret;
+    }
+
+    ret = extract_stats(stats, RPM_MASTER_STAT, NUM_PARAMETERS, 4);
+
+    if (ret) {
+        return ret;
+    }
+
+    /* Update statistics for XO_shutdown */
+    strcpy(list[0].name, "XO_shutdown");
+    list[0].total_transitions = stats[0];
+    list[0].residency_in_msec_since_boot = stats[1];
+    list[0].supported_only_in_suspend = false;
+    list[0].number_of_voters = XO_VOTERS;
+
+    /* Update statistics for APSS voter */
+    strcpy(list[0].voters[0].name, "APSS");
+    list[0].voters[0].total_time_in_msec_voted_for_since_boot = stats[4];
+    list[0].voters[0].total_number_of_times_voted_since_boot = stats[5];
+
+    /* Update statistics for MPSS voter */
+    strcpy(list[0].voters[1].name, "MPSS");
+    list[0].voters[1].total_time_in_msec_voted_for_since_boot = stats[6];
+    list[0].voters[1].total_number_of_times_voted_since_boot = stats[7];
+
+    /* Update statistics for PRONTO voter */
+    strcpy(list[0].voters[0].name, "PRONTO");
+    list[0].voters[0].total_time_in_msec_voted_for_since_boot = stats[8];
+    list[0].voters[0].total_number_of_times_voted_since_boot = stats[9];
+
+    /* Update statistics for TZ voter */
+    strcpy(list[0].voters[1].name, "TZ");
+    list[0].voters[1].total_time_in_msec_voted_for_since_boot = stats[10];
+    list[0].voters[1].total_number_of_times_voted_since_boot = stats[11];
+
+    /* Update statistics for LPASS voter */
+    strcpy(list[0].voters[2].name, "LPASS");
+    list[0].voters[2].total_time_in_msec_voted_for_since_boot = stats[12];
+    list[0].voters[2].total_number_of_times_voted_since_boot = stats[13];
+
+    /* Update statistics for VMIN state */
+    strcpy(list[1].name, "VMIN");
+    list[1].total_transitions = stats[2];
+    list[1].residency_in_msec_since_boot = stats[3];
+    list[1].supported_only_in_suspend = false;
+    list[1].number_of_voters = VMIN_VOTERS;
+
+    return 0;
+}
+
