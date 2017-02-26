@@ -67,6 +67,7 @@ persist.data.mode=concurrent
 debug.sf.hw=0
 debug.egl.hw=0
 persist.hwc.mdpcomp.enable=true
+persist.mdpcomp_perfhint=1
 debug.mdpcomp.logs=0
 dev.pm.dyn_samplingrate=1
 persist.demo.hdmirotationlock=false
