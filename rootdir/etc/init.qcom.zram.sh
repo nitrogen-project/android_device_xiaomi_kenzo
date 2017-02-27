@@ -28,6 +28,11 @@
 # The script will check total_ram and enable zram for devices with total_ram
 # less or equals to 1GB
 
+enable=`getprop persist.zram.enable`
+if [ "$enable" != "true" ]; then
+      exit 0
+fi
+
 setprop ro.config.zram true
 #Set per_process_reclaim tuning parameters
 echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
