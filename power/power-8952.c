@@ -434,19 +434,19 @@ int get_platform_low_power_stats(struct power_module *module,
     list[0].voters[1].total_number_of_times_voted_since_boot = stats[7];
 
     /* Update statistics for PRONTO voter */
-    strcpy(list[0].voters[0].name, "PRONTO");
-    list[0].voters[0].total_time_in_msec_voted_for_since_boot = stats[8];
-    list[0].voters[0].total_number_of_times_voted_since_boot = stats[9];
+    strcpy(list[0].voters[2].name, "PRONTO");
+    list[0].voters[2].total_time_in_msec_voted_for_since_boot = stats[8];
+    list[0].voters[2].total_number_of_times_voted_since_boot = stats[9];
 
     /* Update statistics for TZ voter */
-    strcpy(list[0].voters[1].name, "TZ");
-    list[0].voters[1].total_time_in_msec_voted_for_since_boot = stats[10];
-    list[0].voters[1].total_number_of_times_voted_since_boot = stats[11];
+    strcpy(list[0].voters[3].name, "TZ");
+    list[0].voters[3].total_time_in_msec_voted_for_since_boot = stats[10];
+    list[0].voters[3].total_number_of_times_voted_since_boot = stats[11];
 
     /* Update statistics for LPASS voter */
-    strcpy(list[0].voters[2].name, "LPASS");
-    list[0].voters[2].total_time_in_msec_voted_for_since_boot = stats[12];
-    list[0].voters[2].total_number_of_times_voted_since_boot = stats[13];
+    strcpy(list[0].voters[4].name, "LPASS");
+    list[0].voters[4].total_time_in_msec_voted_for_since_boot = stats[12];
+    list[0].voters[4].total_number_of_times_voted_since_boot = stats[13];
 
     /* Update statistics for VMIN state */
     strcpy(list[1].name, "VMIN");
