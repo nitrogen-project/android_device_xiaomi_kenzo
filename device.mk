@@ -31,10 +31,6 @@ PRODUCT_PACKAGES += \
     libqomx_core \
     libmm-qcamera
 
-# Flashlight
-PRODUCT_PACKAGES += \
-    Flashlight
-
 # Input
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/idc/uinput-fpc.idc:system/usr/idc/uinput-fpc.idc
