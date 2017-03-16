@@ -293,6 +293,10 @@ PRODUCT_PACKAGES += \
     qcom.fmradio \
     qcom.fmradio.xml
 
+# Consumerir
+PRODUCT_PACKAGES += \
+    consumerir.msm8952
+
 # RIL
 PRODUCT_PACKAGES += \
     libril_proxy \
