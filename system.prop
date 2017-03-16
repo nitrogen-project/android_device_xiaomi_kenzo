@@ -1,8 +1,8 @@
 # Audio
 audio.offload.disable=1
-audio.offload.pcm.16bit.enable=false
-audio.offload.pcm.24bit.enable=false
-audio.offload.video=false
+audio.offload.pcm.16bit.enable=true
+audio.offload.pcm.24bit.enable=true
+audio.offload.video=true
 persist.audio.fluence.audiorec=false
 persist.audio.fluence.spk.mono=true
 persist.audio.fluence.voicerec=true
