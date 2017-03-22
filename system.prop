@@ -5,7 +5,7 @@ audio.offload.pcm.24bit.enable=true
 audio.offload.video=true
 persist.audio.fluence.audiorec=false
 persist.audio.fluence.spk.mono=true
-persist.audio.fluence.voicerec=true
+persist.audio.fluence.voicerec=false
 voice.voip.conc.disabled=true
 
 # Radio
