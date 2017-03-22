@@ -159,7 +159,7 @@ voice.conc.fallbackpath=deep-buffer
 #fluencetype can be "fluence" or "fluencepro" or "none"
 ro.qc.sdk.audio.fluencetype=fluence
 persist.audio.fluence.voicecall=true
-persist.audio.fluence.voicerec=true
+persist.audio.fluence.voicerec=false
 persist.audio.fluence.speaker=true
 persist.audio.fluence.audiorec=false
 persist.audio.fluence.spk.mono=true
