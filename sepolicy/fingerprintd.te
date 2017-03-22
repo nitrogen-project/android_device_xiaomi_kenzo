@@ -9,3 +9,6 @@ allow fingerprintd fpc_sysfs:file rw_file_perms;
 allow fingerprintd storage_file:dir search;
 allow fingerprintd tee_device:chr_file rw_file_perms;
 allow fingerprintd uhid_device:chr_file rw_file_perms;
+allow fingerprintd gx_fpd_service:service_manager { find };
+allow fingerprintd fingerprint_service:service_manager { find };
+set_prop(fingerprintd, system_prop)
