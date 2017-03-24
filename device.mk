@@ -281,7 +281,8 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    fingerprintd
+    fingerprintd \
+    fingerprint.kenzo
 
 # FM radio  
 PRODUCT_PACKAGES += \
