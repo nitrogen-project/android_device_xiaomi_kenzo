@@ -1,0 +1,93 @@
+diff --git a/services/core/java/com/android/server/display/DisplayPowerController.java b/services/core/java/com/android/server/display/DisplayPowerController.java
+index 61af8ed..103c7f7 100644
+--- a/services/core/java/com/android/server/display/DisplayPowerController.java
++++ b/services/core/java/com/android/server/display/DisplayPowerController.java
+@@ -19,6 +19,7 @@ package com.android.server.display;
+ import com.android.internal.app.IBatteryStats;
+ import com.android.server.LocalServices;
+ import com.android.server.am.BatteryStatsService;
++import com.android.server.lights.LightsManager;
+ 
+ import android.animation.Animator;
+ import android.animation.ObjectAnimator;
+@@ -123,6 +124,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+     // Battery stats.
+     private final IBatteryStats mBatteryStats;
+ 
++    // The lights manager.
++    private final LightsManager mLightsManager;
++
+     // The sensor manager.
+     private final SensorManager mSensorManager;
+ 
+@@ -264,6 +268,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+         mCallbacks = callbacks;
+ 
+         mBatteryStats = BatteryStatsService.getService();
++        mLightsManager = LocalServices.getService(LightsManager.class);
+         mSensorManager = sensorManager;
+         mWindowManagerPolicy = LocalServices.getService(WindowManagerPolicy.class);
+         mBlanker = blanker;
+@@ -795,6 +800,10 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
+             } catch (RemoteException ex) {
+                 // same process
+             }
++
++            if (state != Display.STATE_ON) {
++                mLightsManager.getLight(LightsManager.LIGHT_ID_BUTTONS).turnOff();
++            }
+         }
+ 
+         // Tell the window manager policy when the screen is turned off or on unless it's due
+diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
+index 01288b8..6a0766d 100644
+--- a/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -181,6 +181,8 @@ public final class PowerManagerService extends SystemService
+     private static final int HALT_MODE_REBOOT = 1;
+     private static final int HALT_MODE_REBOOT_SAFE_MODE = 2;
+ 
++    private static final int BUTTONLIGHT_ON_DURATION = 5 * 1000;
++
+     private final Context mContext;
+     private final ServiceThread mHandlerThread;
+     private final PowerManagerHandler mHandler;
+@@ -196,6 +198,8 @@ public final class PowerManagerService extends SystemService
+     private SettingsObserver mSettingsObserver;
+     private DreamManagerInternal mDreamManager;
+     private Light mAttentionLight;
++    private Light mButtonsLight;
++    private int mButtonsLightBrightness;
+ 
+     private final Object mLock = new Object();
+ 
+@@ -599,6 +603,10 @@ public final class PowerManagerService extends SystemService
+ 
+             mLightsManager = getLocalService(LightsManager.class);
+             mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
++            mButtonsLight = mLightsManager.getLight(LightsManager.LIGHT_ID_BUTTONS);
++            mButtonsLightBrightness = SystemProperties.getInt("persist.sys.buttonlight", -1);
++            if (mButtonsLightBrightness > 255)
++                mButtonsLightBrightness = 255;
+ 
+             // Initialize display power management.
+             mDisplayManagerInternal.initPowerManagement(
+@@ -1716,6 +1724,18 @@ public final class PowerManagerService extends SystemService
+                     nextTimeout = mLastUserActivityTime
+                             + screenOffTimeout - screenDimDuration;
+                     if (now < nextTimeout) {
++                        if (mDisplayPowerRequest.policy == DisplayPowerRequest.POLICY_BRIGHT
++                                && mButtonsLightBrightness != 0) {
++                            if (now > mLastUserActivityTime + BUTTONLIGHT_ON_DURATION) {
++                                mButtonsLight.turnOff();
++                            } else {
++                                int brightness = mButtonsLightBrightness;
++                                if (brightness < 0)
++                                    brightness = mDisplayPowerRequest.screenBrightness;
++                                mButtonsLight.setBrightness(brightness);
++                                nextTimeout = now + BUTTONLIGHT_ON_DURATION;
++                            }
++                        }
+                         mUserActivitySummary = USER_ACTIVITY_SCREEN_BRIGHT;
+                     } else {
+                         nextTimeout = mLastUserActivityTime + screenOffTimeout;
