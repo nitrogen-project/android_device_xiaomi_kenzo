@@ -218,7 +218,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/synaptics_rmi4_i2c.kl:system/usr/keylayout/synaptics_rmi4_i2c.kl \
     $(LOCAL_PATH)/keylayout/msm8976-tashalite-snd-card_Button_Jack.kl:system/usr/keylayout/msm8976-tashalite-snd-card_Button_Jack.kl \
     $(LOCAL_PATH)/keylayout/uinput-fpc.kl:system/usr/keylayout/uinput-fpc.kl \
-    $(LOCAL_PATH)/keylayout/uinput-gf.kl:system/usr/keylayout/uinput-gf.kl
+    $(LOCAL_PATH)/keylayout/uinput-gf.kl:system/usr/keylayout/gf318m.kl
 
 # Media profile
 PRODUCT_COPY_FILES += \
