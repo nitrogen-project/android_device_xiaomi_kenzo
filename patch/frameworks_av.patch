@@ -1,0 +1,54 @@
+diff --git a/media/libstagefright/CameraSource.cpp b/media/libstagefright/CameraSource.cpp
+index 893da89..29a8f7b 100644
+--- a/media/libstagefright/CameraSource.cpp
++++ b/media/libstagefright/CameraSource.cpp
+@@ -313,6 +313,12 @@ status_t CameraSource::isCameraColorFormatSupported(
+     return OK;
+ }
+ 
++static int32_t getHighSpeedFrameRate(const CameraParameters& params) {
++    const char* hsr = params.get("video-hsr");
++    int32_t rate = (hsr != NULL && strncmp(hsr, "off", 3)) ? atoi(hsr) : 0;
++    return rate > 120 ? 120 : rate;
++}
++
+ /*
+  * Configure the camera to use the requested video size
+  * (width and height) and/or frame rate. If both width and
+@@ -365,6 +371,10 @@ status_t CameraSource::configureCamera(
+                 params->get(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES);
+         CHECK(supportedFrameRates != NULL);
+         ALOGV("Supported frame rates: %s", supportedFrameRates);
++        if (getHighSpeedFrameRate(*params)) {
++            ALOGI("Use default 30fps for HighSpeed %dfps", frameRate);
++            frameRate = 30;
++        }
+         char buf[4];
+         snprintf(buf, 4, "%d", frameRate);
+         if (strstr(supportedFrameRates, buf) == NULL) {
+@@ -466,6 +476,8 @@ status_t CameraSource::checkFrameRate(
+         ALOGE("Failed to retrieve preview frame rate (%d)", frameRateActual);
+         return UNKNOWN_ERROR;
+     }
++    int32_t highSpeedRate = getHighSpeedFrameRate(params);
++    frameRateActual = highSpeedRate ? highSpeedRate : frameRateActual;
+ 
+     // Check the actual video frame rate against the target/requested
+     // video frame rate.
+diff --git a/media/libstagefright/CameraSourceTimeLapse.cpp b/media/libstagefright/CameraSourceTimeLapse.cpp
+index 390c556..8ad6018 100644
+--- a/media/libstagefright/CameraSourceTimeLapse.cpp
++++ b/media/libstagefright/CameraSourceTimeLapse.cpp
+@@ -296,6 +296,12 @@ bool CameraSourceTimeLapse::skipFrameAndModifyTimeStamp(int64_t *timestampUs) {
+ 
+         mLastTimeLapseFrameRealTimestampUs = *timestampUs;
+         *timestampUs = mLastFrameTimestampUs + mTimeBetweenTimeLapseVideoFramesUs;
++        // Update start-time once the captured-time reaches the expected start-time.
++        // Not doing so will result in CameraSource always dropping frames since
++        // updated-timestamp will never intersect start-timestamp
++        if ((mNumFramesReceived == 0 && mLastTimeLapseFrameRealTimestampUs >= mStartTimeUs)) {
++            mStartTimeUs = *timestampUs;
++        }
+         return false;
+     }
+     return false;
