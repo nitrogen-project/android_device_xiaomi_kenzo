@@ -23,16 +23,14 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 PRODUCT_AAPT_PREBUILT_DPI := xxhdpi xhdpi hdpi
 
 # kernel
-PRODUCT_PACKAGES += \
-    kernel
+#PRODUCT_PACKAGES += \
+#    kernel
 
 # Ramdisk
 PRODUCT_PACKAGES += \
     fstab.qcom \
     vold.fstab \
     init.class_main.sh \
-    init.qcom.class_core.sh \
-    init.qcom.early_boot.sh \
     init.qcom.post_boot.sh \
     init.qcom.qseecomd.sh \
     init.qcom.zram.sh \
@@ -350,10 +348,6 @@ PRODUCT_PACKAGES += \
     libcnefeatureconfig \
     libtinyxml
 
-PRODUCT_PACKAGES += \
-    Eleven \
-    Browser
-
 # Telephony packages
 PRODUCT_PACKAGES += \
     ims-ext-common \
@@ -361,6 +355,9 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BOOT_JARS += \
     telephony-ext
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.sf.lcd_density=430
 
 # setup dalvik vm configs.
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)

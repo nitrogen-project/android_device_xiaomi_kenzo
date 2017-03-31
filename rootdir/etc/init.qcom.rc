@@ -53,7 +53,6 @@ on early-boot
     write /sys/kernel/codec_type/boot ${persist.sys.external}
     write /sys/kernel/boot_adsp/boot 1
     chown root audio /sys/kernel/boot_adsp/boot
-    exec u:r:qti_init_shell:s0 -- /init.qcom.early_boot.sh
 
 on boot
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
@@ -371,12 +370,6 @@ on property:bluetooth.startbtsnoop=true
 
 on property:bluetooth.startbtsnoop=false
     stop btsnoop
-
-service qcom-c_core-sh /system/bin/sh /init.qcom.class_core.sh
-    class core
-    user root
-    oneshot
-    seclabel u:r:qti_init_shell:s0
 
 service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     class main
