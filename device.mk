@@ -356,6 +356,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     telephony-ext
 
+# Libshims
+PRODUCT_PACKAGES += \
+    libshims_ims
+
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=430
 
