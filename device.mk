@@ -284,9 +284,9 @@ PRODUCT_PACKAGES += \
 # Fingerprint
 PRODUCT_PACKAGES += \
     fingerprintd \
-    fingerprint.kenzo
+    fingerprint.msm8952
 
-# FM radio  
+# FM radio
 PRODUCT_PACKAGES += \
     FM2 \
     libqcomfm_jni \
