@@ -103,7 +103,7 @@ ro.btconfig.vendor=qcom
 ro.btconfig.chip=WCN3680
 
 # Camera
-persist.camera.HAL3.enabled=0
+persist.camera.HAL3.enabled=1
 persist.camera.cpp.duplication=false
 persist.ts.rtmakeup=true
 
