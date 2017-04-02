@@ -62,6 +62,9 @@ BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/xiaomi/kenzo
 TARGET_KERNEL_CONFIG := kenzo_defconfig
 
+# Lights
+TARGET_PROVIDES_LIBLIGHT := true
+
 # QCOM hardware
 BOARD_USES_QCOM_HARDWARE := true
 
