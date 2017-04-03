@@ -317,11 +317,11 @@ PRODUCT_PACKAGES += \
     libipanat
 
 # Thermal
-PRODUCT_PACKAGES += \
-    thermal.kenzo
+#PRODUCT_PACKAGES += \
+#    thermal.kenzo
 
-PRODUCT_COPY_FILES += \
-    device/xiaomi/kenzo/configs/thermal-engine-8956.conf:system/etc/thermal-engine-8956.conf
+#PRODUCT_COPY_FILES += \
+#    device/xiaomi/kenzo/configs/thermal-engine-8956.conf:system/etc/thermal-engine-8956.conf
 
 # for off charging mode
 PRODUCT_PACKAGES += \
