@@ -118,7 +118,7 @@ camera.display.lmax=1280x720
 camera.lowpower.record.enable=1
 
 # Media
-media.msm8956hw=0
+media.msm8956hw=1
 mm.enable.smoothstreaming=true
 av.debug.disable.pers.cache=true
 mmp.enable.3g2=true
