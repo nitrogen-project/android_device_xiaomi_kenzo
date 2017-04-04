@@ -52,38 +52,45 @@ function get-set-forall() {
     write /sys/devices/soc.0/qcom,bcl.56/mode "enable"
 
     # configure governor settings for little cluster
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor impulse
-    restorecon -R /sys/devices/system/cpu # must restore after impulse
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/timer_slack -1
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/timer_rate 40000
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/target_loads "80 400000:33 691200:25 806400:50 1017600:65 1190400:70 1305600:85 1382400:90 1401600:92 1440000:98"
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/min_sample_time 50000
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/hispeed_freq 1382400
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/go_hispeed_load 85
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/above_hispeed_delay 0
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/align_windows 0
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/max_freq_hysteresis 166667
-    write /sys/devices/system/cpu/cpu0/cpufreq/impulse/powersave_bias 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
+    restorecon -R /sys/devices/system/cpu # must restore after interactive
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load 85
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate 40000
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq 1382400
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack -1
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads "80 400000:33 691200:25 806400:50 1017600:65 1190400:70 1305600:85 1382400:90 1401600:92 1440000:98"
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time 50000
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/align_windows 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis 166667
 
     # online CPU4
     write /sys/devices/system/cpu/cpu4/online 1
 
     # configure governor settings for big cluster
-    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor ironactive
-    restorecon -R /sys/devices/system/cpu # must restore after ironactive
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/go_hispeed_load 90
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/above_hispeed_delay 0
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/timer_rate 20000
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/hispeed_freq 1305600
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/timer_slack -1
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/target_loads "74 998400:73 1056000:64 1113600:80 1190400:61 1248000:69 1305600:64 1382400:74 1612800:69 1747200:67 1804800:72"
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/min_sample_time 30000
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/boost 0
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/align_windows 0
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/use_migration_notif 1
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/use_sched_load 0
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/max_freq_hysteresis 20000
-    write /sys/devices/system/cpu/cpu4/cpufreq/ironactive/boostpulse_duration 80000
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor interactive
+    restorecon -R /sys/devices/system/cpu # must restore after interactive
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 400000
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load 90
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay 0
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate 20000
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq 1305600
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_slack -1
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads "74 998400:73 1056000:64 1113600:80 1190400:61 1248000:69 1305600:64 1382400:74 1612800:69 1747200:67 1804800:72"
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time 30000
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost 0
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/align_windows 0
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_migration_notif 1
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load 0
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis 20000
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/boostpulse_duration 80000
+
+    # input boost configuration
+    write /sys/module/cpu_boost/parameters/input_boost_enabled 1
+    write /sys/module/cpu_boost/parameters/input_boost_freq "0:691200 1:691200 2:691200 3:691200 4:0 5:0"
+    write /sys/module/cpu_boost/parameters/input_boost_ms 40
 
     # HMP Task packing settings for 8956
     write /proc/sys/kernel/sched_small_task 30
