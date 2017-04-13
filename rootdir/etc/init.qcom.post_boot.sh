@@ -120,23 +120,6 @@ function get-set-forall() {
     write /sys/module/lpm_levels/system/a53/a53-l2-gdhs/idle_enabled "N"
     write /sys/module/lpm_levels/system/a72/a72-l2-gdhs/idle_enabled "N"
 
-    # Configure core_ctl
-    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 4
-    write /sys/devices/system/cpu/cpu0/core_ctl/max_cpus 4
-    write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 25
-    write /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres 20
-    write /sys/devices/system/cpu/cpu0/core_ctl/offline_delay_ms 1800
-    write /sys/devices/system/cpu/cpu0/core_ctl/is_big_cluster 0
-#    write /sys/devices/system/cpu/cpu0/core_ctl/not_preferred "1 0 0 0"
-    write /sys/devices/system/cpu/cpu4/core_ctl/min_cpus 2
-    write /sys/devices/system/cpu/cpu4/core_ctl/max_cpus 2
-    write /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres 68
-    write /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres 40
-    write /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms 100
-    write /sys/devices/system/cpu/cpu4/core_ctl/task_thres 4
-    write /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster 1
-#    write /sys/devices/system/cpu/cpu4/core_ctl/not_preferred "1 0"
-
     # msm_perfomance
     write /sys/module/msm_performance/parameters/touchboost 0
 
@@ -146,7 +129,7 @@ function get-set-forall() {
     # Re-enable BCL hotplug
     write /sys/devices/soc.0/qcom,bcl.56/mode "disable"
     write /sys/devices/soc.0/qcom,bcl.56/hotplug_mask 48
-    write /sys/devices/soc.0/qcom,bcl.56/hotplug_soc_mask 32
+    write /sys/devices/soc.0/qcom,bcl.56/hotplug_soc_mask 48
     write /sys/devices/soc.0/qcom,bcl.56/mode "enable"
 
     # Enable timer migration to little cluster
