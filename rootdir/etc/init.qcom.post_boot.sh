@@ -183,4 +183,4 @@ function get-set-forall() {
     write /sys/class/timed_output/vibrator/vtg_level 1800
 
     # Set scheduler
-    write /sys/block/mmcblk0/queue/scheduler sioplus
+    write /sys/block/mmcblk0/queue/scheduler fiops
