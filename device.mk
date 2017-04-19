@@ -90,7 +90,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     device/xiaomi/kenzo/audio/audio_policy.conf:system/etc/audio_policy.conf \
     device/xiaomi/kenzo/audio/audio_output_policy.conf:system/vendor/etc/audio_output_policy.conf \
-    device/xiaomi/kenzo/audio/audio_effects.conf:system/vendor/etc/audio_effects.conf \
     device/xiaomi/kenzo/audio/mixer_paths_mtp.xml:system/etc/mixer_paths_mtp.xml \
     device/xiaomi/kenzo/audio/mixer_paths_qrd_skuh.xml:system/etc/mixer_paths_qrd_skuh.xml \
     device/xiaomi/kenzo/audio/mixer_paths_qrd_skui.xml:system/etc/mixer_paths_qrd_skui.xml \
