@@ -98,6 +98,9 @@ ro.hwui.text_small_cache_height=1024
 ro.hwui.text_large_cache_width=2048
 ro.hwui.text_large_cache_height=1024
 
+# Set UI & RenderThreads to use FIFO
+sys.use_fifo_ui=1
+
 # CABL
 ro.qualcomm.cabl=2
 
