@@ -70,8 +70,8 @@ persist.data.netmgrd.qos.enable=true
 persist.data.mode=concurrent
 
 # Graphics
-debug.sf.hw=0
-debug.egl.hw=0
+debug.sf.hw=1
+debug.egl.hw=1
 persist.hwc.mdpcomp.enable=true
 persist.mdpcomp_perfhint=1
 debug.mdpcomp.logs=0
