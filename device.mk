@@ -327,7 +327,7 @@ PRODUCT_PACKAGES += \
 
 # for off charging mode
 PRODUCT_PACKAGES += \
-    charger_res_images
+    healthd_xiaomi
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
