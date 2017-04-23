@@ -255,7 +255,9 @@ PRODUCT_COPY_FILES += \
 
 # wlan driver
 PRODUCT_PACKAGES += \
-    WCNSS_cfg.dat
+    WCNSS_cfg.dat \
+    WCNSS_qcom_wlan_nv.bin \
+    WCNSS_wlan_dictionary.dat
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:system/etc/wifi/WCNSS_qcom_cfg.ini \
