@@ -1,3 +1,18 @@
 qmux_socket(qti_init_shell)
 allow qti_init_shell ctl_default_prop:property_service set;
 allow qti_init_shell btnvtool_exec:file rx_file_perms;
+
+allow qti_init_shell proc_kernel_sched:file w_file_perms;
+allow qti_init_shell self:capability net_admin;
+allow qti_init_shell shell_exec:file r_file_perms;
+allow qti_init_shell sysfs_devices_system_cpu:file w_file_perms;
+allow qti_init_shell sysfs_performance:dir search;
+allow qti_init_shell sysfs_performance:file w_file_perms;
+allow qti_init_shell sysfs_thermal:dir search;
+allow qti_init_shell sysfs_thermal:file w_file_perms;
+allow qti_init_shell sysfs_power_management:file w_file_perms;
+allow qti_init_shell sysfs_lowmemorykiller:file { read write open getattr setattr };
+allow qti_init_shell system_file:file execute_no_trans;
+allow qti_init_shell proc:file { open write read getattr setattr };
+allow qti_init_shell sysfs:file { open write read getattr setattr };
+allow qti_init_shell sysfs_rqstats:dir { read open search };

@@ -1,2 +1,6 @@
 allow vold adsprpcd_file:dir r_dir_perms;
 allow vold persist_file:dir r_dir_perms;
+
+# Allow mounting of storage devices
+allow vold { mnt_media_rw_stub_file storage_stub_file }:dir { mounton create rmdir getattr setattr };
+allow vold sdcard_type:filesystem { mount unmount remount };
