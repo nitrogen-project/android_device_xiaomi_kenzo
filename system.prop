@@ -23,6 +23,7 @@ ro.telephony.default_cdma_sub=0
 ro.telephony.default_network=22,20
 persist.sys.ssr.enable_ramdumps=1
 persist.sys.ssr.restart_level=modem
+persist.data.qmi.adb_logmask=0
 
 #Enable for IMS feature
 persist.radio.VT_HYBRID_ENABLE=1
