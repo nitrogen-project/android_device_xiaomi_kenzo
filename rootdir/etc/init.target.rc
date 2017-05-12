@@ -366,7 +366,3 @@ on property:persist.sys.fp.goodix=0
 
 on property:persist.sys.fp.goodix=1
     start gx_fpd
-
-service mtservice /system/bin/mtd
-    class late_start
-
