@@ -43,47 +43,63 @@
 
     <!-- Different CPU speeds as reported in
          /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state -->
-    <array name="cpu.speeds">
-        <value>400000</value>
-        <value>691200</value>
-        <value>806400</value>
-        <value>883200</value>
-        <value>940800</value>
-        <value>998400</value>
-        <value>1017600</value>
-        <value>1056000</value>
-        <value>1113600</value>
-        <value>1190400</value>
-        <value>1248000</value>
-        <value>1305600</value>
-        <value>1382400</value>
-        <value>1401600</value>
-        <value>1612800</value>
-        <value>1747200</value>
-        <value>1804800</value>
+    <array name="cpu.speeds.cluster0">
+        <value>400000</value> <!-- 400 MHz CPU speed -->
+        <value>691200</value> <!-- 691.2 MHz CPU speed -->
+        <value>806400</value> <!-- 806.4 MHz CPU speed -->
+        <value>1017600</value> <!-- 1017.6 MHz CPU speed -->
+        <value>1190400</value> <!-- 1190.4 MHz CPU speed -->
+        <value>1305600</value> <!-- 1305.6 MHz CPU speed -->
+        <value>1382400</value> <!-- 1382.4 MHz CPU speed -->
+        <value>1401600</value> <!-- 1401.6 MHz CPU speed -->
+    </array>
+    <array name="cpu.speeds.cluster1">
+        <value>400000</value> <!-- 400 MHz CPU speed -->
+        <value>883200</value> <!-- 883.2 MHz CPU speed -->
+        <value>940800</value> <!-- 940.8 MHz CPU speed -->
+        <value>998400</value> <!-- 998.4 MHz CPU speed -->
+        <value>1056000</value> <!-- 1056 MHz CPU speed -->
+        <value>1113600</value> <!-- 1113.6 MHz CPU speed -->
+        <value>1190400</value> <!-- 1190.4 MHz CPU speed -->
+        <value>1248000</value> <!-- 1248 MHz CPU speed -->
+        <value>1305600</value> <!-- 1305.6 MHz CPU speed -->
+        <value>1382400</value> <!-- 1382.4 MHz CPU speed -->
+        <value>1612800</value> <!-- 1612.8 MHz CPU speed -->
+        <value>1747200</value> <!-- 1747.2 MHz CPU speed -->
+        <value>1804800</value> <!-- 1804.8 MHz CPU speed -->
     </array>
     <!-- Power consumption when CPU is idle -->
     <item name="cpu.idle">8</item>
     <item name="cpu.awake">25</item>
     <!-- Power consumption at different speeds -->
-    <array name="cpu.active">
-        <value>111</value>
-        <value>121</value>
-        <value>128</value>
-        <value>227</value>
-        <value>255</value>
-        <value>264</value>
-        <value>142</value>
-        <value>273</value>
-        <value>284</value>
-        <value>295</value>
-        <value>324</value>
-        <value>335</value>
-        <value>349</value>
-        <value>173</value>
-        <value>423</value>
-        <value>501</value>
-        <value>506</value>
+    <array name="cpu.active.cluster0">
+        <value>39</value> <!-- 400 MHz CPU speed -->
+        <value>45</value> <!-- 691.2 MHz CPU speed -->
+        <value>49</value> <!-- 806.4 MHz CPU speed -->
+        <value>57</value> <!-- 1017.6 MHz CPU speed -->
+        <value>78</value> <!-- 1190.4 MHz CPU speed -->
+        <value>84</value> <!-- 1305.6 MHz CPU speed -->
+        <value>88</value> <!-- 1382.4 MHz CPU speed -->
+        <value>90</value> <!-- 1401.6 MHz CPU speed -->
+    </array>
+    <array name="cpu.active.cluster1">
+        <value>67</value> <!-- 400 MHz CPU speed -->
+        <value>96</value> <!-- 883.2 MHz CPU speed -->
+        <value>109</value> <!-- 940.8 MHz CPU speed -->
+        <value>99</value> <!-- 998.4 MHz CPU speed -->
+        <value>104</value> <!-- 1056 MHz CPU speed -->
+        <value>106</value> <!-- 1113.6 MHz CPU speed -->
+        <value>109</value> <!-- 1190.4 MHz CPU speed -->
+        <value>122</value> <!-- 1248 MHz CPU speed -->
+        <value>127</value> <!-- 1305.6 MHz CPU speed -->
+        <value>132</value> <!-- 1382.4 MHz CPU speed -->
+        <value>177</value> <!-- 1612.8 MHz CPU speed -->
+        <value>196</value> <!-- 1747.2 MHz CPU speed -->
+        <value>206</value> <!-- 1804.8 MHz CPU speed -->
+    </array>
+    <array name="cpu.clusters.cores">
+        <value>4</value> <!-- Cluster 0 has 4 cores (cpu0, cpu1, cpu2, cpu3) -->
+        <value>2</value> <!-- Cluster 0 has 2 cores (cpu4, cpu5) -->
     </array>
 
     <!-- This is the battery capacity in mAh -->
