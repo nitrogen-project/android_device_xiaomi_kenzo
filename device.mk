@@ -246,8 +246,7 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    fingerprintd \
-    fingerprint.msm8952
+    fingerprintd
 
 # FM radio
 PRODUCT_PACKAGES += \

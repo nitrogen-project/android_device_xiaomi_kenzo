@@ -344,8 +344,8 @@ on boot
     write /dev/cpuset/top-app/cpus 0-5
     write /dev/cpuset/camera-daemon/cpus 0-3
 
-service fingerprintd /system/bin/fingerprintd   
-    class late_start 
+service fingerprintd /system/bin/fingerprintd
+    class late_start
     socket fpce stream 0666 system system
     user system
     group system sdcard_rw
@@ -358,8 +358,13 @@ service gx_fpd /system/bin/gx_fpd
     disabled
     writepid /dev/cpuset/system-background/tasks
 
-#on property:ro.boot.fpsensor=gdx
-#    start gx_fpd
+on property:ro.boot.fpsensor=fpc
+    setprop persist.sys.fp.goodix 0
+    setprop ro.hardware.fingerprint fpc
+
+on property:ro.boot.fpsensor=gdx
+    setprop persist.sys.fp.goodix 1
+    setprop ro.hardware.fingerprint goodix
 
 on property:persist.sys.fp.goodix=0
     stop gx_fpd
