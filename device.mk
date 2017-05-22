@@ -36,7 +36,6 @@ PRODUCT_PACKAGES += \
     init.qcom.zram.sh \
     init.qcom.rc \
     init.qcom.sh \
-    init.qcom.syspart_fixup.sh \
     init.qcom.usb.rc \
     init.qcom.usb.sh \
     init.qcom.bt.sh \
