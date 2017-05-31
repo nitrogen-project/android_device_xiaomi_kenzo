@@ -398,4 +398,6 @@
     <!-- Whether device supports double tap to wake -->
     <!--bool name="config_supportDoubleTapWake">true</bool-->
 
+    <!-- True if Unprocessed audio source supports the required frequency range and level -->
+    <bool name="config_supportAudioSourceUnprocessed">true</bool>
 </resources>
