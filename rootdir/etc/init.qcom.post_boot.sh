@@ -55,7 +55,7 @@ function get-set-forall() {
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     restorecon -R /sys/devices/system/cpu # must restore after interactive
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 691200
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load 85
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay 0
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate 40000
@@ -72,7 +72,7 @@ function get-set-forall() {
     # configure governor settings for big cluster
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor interactive
     restorecon -R /sys/devices/system/cpu # must restore after interactive
-    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 400000
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 883200
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load 90
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay 0
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate 20000
@@ -88,8 +88,8 @@ function get-set-forall() {
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/boostpulse_duration 80000
 
     # input boost configuration
-    write /sys/module/cpu_boost/parameters/input_boost_enabled 1
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:691200 1:691200 2:691200 3:691200 4:0 5:0"
+    write /sys/module/cpu_boost/parameters/input_boost_enabled 0
+    write /sys/module/cpu_boost/parameters/input_boost_freq "0:0 1:0 2:0 3:0 4:0 5:0"
     write /sys/module/cpu_boost/parameters/input_boost_ms 40
 
     # HMP Task packing settings for 8956
@@ -100,8 +100,6 @@ function get-set-forall() {
     write /sys/devices/system/cpu/cpu3/sched_mostly_idle_load 20
     write /sys/devices/system/cpu/cpu4/sched_mostly_idle_load 20
     write /sys/devices/system/cpu/cpu5/sched_mostly_idle_load 20
-
-    write /proc/sys/kernel/sched_boost 0
 
     # Bring up all cores online
     write /sys/devices/system/cpu/cpu1/online 1
