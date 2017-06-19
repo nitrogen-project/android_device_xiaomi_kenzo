@@ -313,7 +313,7 @@ PRODUCT_PACKAGES += \
     libshims_ims
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=430
+    ro.sf.lcd_density=480
 
 # setup dalvik vm configs.
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
