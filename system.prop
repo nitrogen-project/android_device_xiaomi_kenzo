@@ -102,6 +102,7 @@ ro.btconfig.chip=WCN3680
 persist.camera.HAL3.enabled=1
 persist.camera.cpp.duplication=false
 persist.ts.rtmakeup=true
+persist.capture.burst.exposures=-5,0,5
 
 #force HAL1 for below packages
 camera.hal1.packagelist=com.skype.raider,com.google.android.talk
