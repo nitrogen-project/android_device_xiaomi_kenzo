@@ -122,7 +122,7 @@ service qseecomd /system/bin/qseecomd
 service perfd /system/vendor/bin/perfd
     class main
     user root
-    disabled
+    group system
     writepid /dev/cpuset/system-background/tasks
 
 service seempd /system/bin/seempd
