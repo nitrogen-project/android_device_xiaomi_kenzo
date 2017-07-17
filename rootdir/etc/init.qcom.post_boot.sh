@@ -185,3 +185,6 @@ function get-set-forall() {
 
     # Set scheduler
     write /sys/block/mmcblk0/queue/scheduler noop
+
+    # enable Audio High Performance Mode
+    echo 1 > /sys/module/snd_soc_msm8x16_wcd/parameters/high_perf_mode
