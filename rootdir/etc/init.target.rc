@@ -78,6 +78,7 @@ on post-fs-data
     chmod 0666 /sys/class/leds/led:torch_0/brightness
     chmod 0666 /sys/class/leds/led:torch_1/brightness
     chmod 0666 /sys/class/leds/led:switch/brightness
+    chmod 0666 /sys/class/leds/flashlight/brightness
 
     chown system system /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
     chmod 0660 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq

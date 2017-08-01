@@ -36,3 +36,6 @@
 
 # Thermal
 /data/decrypt.txt                                                     u:object_r:thermal_data_file:s0
+
+# flashlight
+/sys/devices/soc.0/qpnp-flash-led-23/leds/flashlight/brightness       u:object_r:sysfs_flashlight:s0
