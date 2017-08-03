@@ -1,2 +1,0 @@
-type sysfs_flashlight, sysfs_type, fs_type;
-allow cameraserver sysfs_flashlight:file rw_file_perms;
