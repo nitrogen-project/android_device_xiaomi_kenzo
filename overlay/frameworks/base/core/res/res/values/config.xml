@@ -466,4 +466,7 @@
 
     <!-- True if Unprocessed audio source supports the required frequency range and level -->
     <bool name="config_supportAudioSourceUnprocessed">true</bool>
+
+    <!-- Doze: should the TYPE_PICK_UP_GESTURE or TYPE_TILT_DETECTOR sensor be used as a pulse signal. -->
+    <bool name="config_dozePulsePickup">true</bool>
 </resources>
