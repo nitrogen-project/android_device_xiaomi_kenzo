@@ -260,6 +260,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     librmnetctl \
     libxml2 \
+    rild_socket \
     Stk
 
 PRODUCT_COPY_FILES += \
