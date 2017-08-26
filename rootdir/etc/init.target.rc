@@ -343,13 +343,6 @@ on boot
     write /dev/cpuset/top-app/cpus 0-5
     write /dev/cpuset/camera-daemon/cpus 0-3
 
-service fingerprintd /system/bin/fingerprintd
-    class late_start
-    socket fpce stream 0666 system system
-    user system
-    group system sdcard_rw
-    writepid /dev/cpuset/system-background/tasks
-
 service gx_fpd /system/bin/gx_fpd
     class late_start
     user system
