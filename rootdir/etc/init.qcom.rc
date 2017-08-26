@@ -669,7 +669,7 @@ service battery_monitor /system/bin/battery_monitor
     group system
     disabled
 
-service ril-daemon /system/bin/rild
+service ril-daemon /vendor/bin/hw/rild
     class main
     socket rild stream 660 root radio
     socket sap_uim_socket1 stream 660 bluetooth bluetooth
@@ -683,7 +683,7 @@ service ril-daemon2 /vendor/bin/hw/rild -c 2
     disabled
     group radio cache inet misc audio log readproc wakelock sdcard_r sdcard_rw net_raw
 
-service ril-daemon3 /system/bin/rild -c 3
+service ril-daemon3 /vendor/bin/hw/rild -c 3
     class main
     socket rild3 stream 660 root radio
     socket rild-debug3 stream 660 radio system
