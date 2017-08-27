@@ -355,14 +355,6 @@ PRODUCT_PACKAGES += \
     libcnefeatureconfig \
     libtinyxml
 
-# Telephony packages
-PRODUCT_PACKAGES += \
-    ims-ext-common \
-    telephony-ext
-
-PRODUCT_BOOT_JARS += \
-    telephony-ext
-
 # Libshims
 PRODUCT_PACKAGES += \
     libshims_ims
