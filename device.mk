@@ -320,6 +320,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/netmgr_config.xml:system/etc/data/netmgr_config.xml \
     $(LOCAL_PATH)/configs/qmi_config.xml:system/etc/data/qmi_config.xml
 
+# Seccomp policy
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/seccomp_policy/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy
+
 # IPACM
 PRODUCT_PACKAGES += \
     IPACM_cfg.xml \
