@@ -200,9 +200,6 @@ TARGET_USES_CSVT := true
 
 MALLOC_SVELTE := true
 
-# Enable sensor multi HAL
-USE_SENSOR_MULTI_HAL := true
-
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_HAS_QCOM_WLAN_SDK := true
