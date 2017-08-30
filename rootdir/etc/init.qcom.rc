@@ -403,6 +403,7 @@ service cnd /system/bin/cnd
     class main
     socket cnd stream 660 root inet
     writepid /dev/cpuset/system-background/tasks
+    setenv LD_LIBRARY_PATH /system/vendor/lib64/legacy
 
 service dpmd /system/bin/dpmd
     class late_start
@@ -533,6 +534,7 @@ service netmgrd /system/bin/netmgrd
     class main
     disabled
     writepid /dev/cpuset/system-background/tasks
+    setenv LD_LIBRARY_PATH /system/vendor/lib64/legacy
 
 service ipacm /system/bin/ipacm
     class main

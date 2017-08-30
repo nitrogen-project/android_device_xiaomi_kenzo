@@ -190,6 +190,7 @@ service imsdatadaemon /system/bin/imsdatadaemon
     user system
     socket ims_datad stream 0660 system radio
     group system wifi radio inet log diag
+    setenv LD_LIBRARY_PATH /system/vendor/lib64/legacy
     disabled
 
 on property:sys.ims.QMI_DAEMON_STATUS=1
