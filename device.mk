@@ -339,10 +339,6 @@ PRODUCT_PACKAGES += \
     make_ext4fs \
     setup_fs
 
-# for android_filesystem_config.h
-PRODUCT_PACKAGES += \
-    fs_config_files
-
 # Misc dependency packages
 PRODUCT_PACKAGES += \
     ebtables \
