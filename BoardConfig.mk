@@ -114,8 +114,8 @@ TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 
 # SELinux
-#-include device/qcom/sepolicy/sepolicy.mk
-#BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
+-include device/qcom/sepolicy/sepolicy.mk
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
 # Force camera module to be compiled only in 32-bit mode on 64-bit systems
 # Once camera module can run in the native mode of the system (either

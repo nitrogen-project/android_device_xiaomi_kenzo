@@ -386,7 +386,7 @@ service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     class main
     user root
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 on property:vold.decrypt=trigger_restart_framework
     start qcom-c_main-sh
@@ -456,7 +456,7 @@ service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
     class core
     user root
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class late_start
@@ -464,7 +464,7 @@ service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     group bluetooth net_bt_admin
     disabled
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 on property:bluetooth.hciattach=true
     start hciattach
@@ -597,27 +597,27 @@ service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     group system
     disabled
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 service qcom-sh /system/bin/sh /init.qcom.sh
     class late_start
     user root
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
     class late_start
     user root
     disabled
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 service config-zram /system/bin/sh /system/etc/init.qcom.zram.sh
     class late_start
     user root
     disabled
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 on property:sys.boot_completed=1
     start qcom-post-boot
@@ -672,7 +672,7 @@ service ril-daemon3 /vendor/bin/hw/rild -c 3
 service charger /charger
     class charger
     group system graphics
-#    seclabel u:r:healthd:s0
+    seclabel u:r:charger:s0
 
 service charger_monitor /system/bin/charger_monitor
     user root
@@ -695,7 +695,7 @@ service bms-sh /system/bin/sh /init.qcom.bms.sh
     class main
     user root
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
     class core
@@ -714,14 +714,14 @@ service cs-early-boot /system/bin/sh /persist/coresight/qdss.agent.sh early-boot
     class core
     user root
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 # Coresight post boot servive
 service cs-post-boot /system/bin/sh /persist/coresight/qdss.agent.sh
     user root
     disabled
     oneshot
-#    seclabel u:r:qti_init_shell:s0
+    seclabel u:r:qti_init_shell:s0
 
 on property:sys.boot_completed=1
     start cs-post-boot
