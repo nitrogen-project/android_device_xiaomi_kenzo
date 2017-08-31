@@ -662,12 +662,12 @@ service ril-daemon /vendor/bin/hw/rild
     socket rild stream 660 root radio
     socket sap_uim_socket1 stream 660 bluetooth bluetooth
     socket rild-debug stream 660 radio system
-    user root
+    user radio
     group radio cache inet misc audio log readproc wakelock sdcard_r sdcard_rw diag net_raw
 
 service ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
-    user root
+    user radio
     disabled
     group radio cache inet misc audio log readproc wakelock sdcard_r sdcard_rw net_raw
 
