@@ -277,7 +277,8 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.1-service
+    android.hardware.biometrics.fingerprint@2.1-service \
+    fingerprint.msm8952
 
 # FM radio
 PRODUCT_PACKAGES += \
