@@ -97,6 +97,9 @@ ro.btconfig.if=smd
 ro.btconfig.dev=/dev/smd3
 ro.btconfig.vendor=qcom
 ro.btconfig.chip=WCN3680
+ro.bluetooth.dun=true
+ro.bluetooth.hfp.ver=1.7
+ro.bluetooth.sap=true
 
 # Camera
 persist.camera.HAL3.enabled=1
