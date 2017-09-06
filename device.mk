@@ -54,7 +54,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.consumerir.xml:system/etc/permissions/android.hardware.consumerir.xml \
     frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:system/etc/permissions/android.hardware.fingerprint.xml \
-    frameworks/native/data/etc/android.hardware.hdmi.cec.xml:system/etc/permissions/android.hardware.hdmi.cec.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:system/etc/permissions/android.hardware.opengles.aep.xml \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
@@ -144,7 +143,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     copybit.msm8952 \
     gralloc.msm8952 \
-    hdmi_cec.msm8952 \
     hwcomposer.msm8952 \
     memtrack.msm8952 \
     liboverlay \
@@ -152,10 +150,7 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-service \
     android.hardware.graphics.mapper@2.0-impl \
     android.hardware.memtrack@1.0-impl \
-    android.hardware.graphics.composer@2.1-impl \
-    android.hardware.tv.cec@1.0-impl \
-    android.hardware.tv.input@1.0-impl \
-    android.hardware.tv.input@1.0-service
+    android.hardware.graphics.composer@2.1-impl
 
 # new gatekeeper HAL
 PRODUCT_PACKAGES += \
