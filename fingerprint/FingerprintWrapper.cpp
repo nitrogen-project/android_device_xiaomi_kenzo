@@ -187,7 +187,10 @@ static int set_active_group(struct fingerprint_device *dev, uint32_t gid, const 
 {
     device_t *device = (device_t *) dev;
 
-    return device->vendor.device->set_active_group(device->vendor.device, gid, store_path);
+    int ret = device->vendor.device->set_active_group(device->vendor.device, gid, store_path);
+    if (ret)
+        ALOGE("%s: error %d\n", __func__, ret);
+    return 0;
 }
 
 static int authenticate(struct fingerprint_device *dev, uint64_t operation_id, uint32_t gid)
