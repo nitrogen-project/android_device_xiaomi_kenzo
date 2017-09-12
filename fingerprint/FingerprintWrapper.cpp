@@ -44,6 +44,7 @@ static union {
 enum {
 	HACK_NONE = 0,
 	HACK_CANCEL = 1,
+	HACK_SET_ACTIVE_GROUP = 2,
 };
 static int vendor_hack = HACK_NONE;
 
@@ -89,6 +90,7 @@ static bool ensure_vendor_module_is_loaded(void)
             property_set("persist.sys.fp.goodix", "0");
             rv = load("/system/vendor/lib64/hw/fingerprint.fpc.so", &vendor.hw_module);
         } else {
+            vendor_hack |= HACK_SET_ACTIVE_GROUP;
             property_set("persist.sys.fp.goodix", "1");
             rv = load("/system/vendor/lib64/hw/fingerprint.goodix.so", &vendor.hw_module);
         }
@@ -204,10 +206,10 @@ static int set_active_group(struct fingerprint_device *dev, uint32_t gid, const 
 {
     device_t *device = (device_t *) dev;
 
-    int ret = device->vendor.device->set_active_group(device->vendor.device, gid, store_path);
-    if (ret)
-        ALOGE("%s: error %d\n", __func__, ret);
-    return 0;
+    int rv = device->vendor.device->set_active_group(device->vendor.device, gid, store_path);
+    if ((rv > 0) && (vendor_hack & HACK_SET_ACTIVE_GROUP))
+        rv = 0;
+    return rv;
 }
 
 static int authenticate(struct fingerprint_device *dev, uint64_t operation_id, uint32_t gid)
