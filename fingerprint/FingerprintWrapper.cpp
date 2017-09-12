@@ -41,6 +41,12 @@ static union {
     const hw_module_t *hw_module;
 } vendor;
 
+enum {
+	HACK_NONE = 0,
+	HACK_CANCEL = 1,
+};
+static int vendor_hack = HACK_NONE;
+
 static int load(const char *path,
         const struct hw_module_t **pHmi)
 {
@@ -79,6 +85,7 @@ static bool ensure_vendor_module_is_loaded(void)
         property_get("ro.boot.fpsensor", vend, NULL);
 
         if (!strcmp(vend, "fpc")) {
+            vendor_hack |= HACK_CANCEL;
             property_set("persist.sys.fp.goodix", "0");
             rv = load("/system/vendor/lib64/hw/fingerprint.fpc.so", &vendor.hw_module);
         } else {
@@ -138,7 +145,17 @@ static int cancel(struct fingerprint_device *dev)
 {
     device_t *device = (device_t *) dev;
 
-    return device->vendor.device->cancel(device->vendor.device);
+    int rv = device->vendor.device->cancel(device->vendor.device);
+
+    if ((rv == 0) && (vendor_hack & HACK_CANCEL)) {
+        fingerprint_msg_t msg;
+
+        msg.type = FINGERPRINT_ERROR;
+        msg.data.error = FINGERPRINT_ERROR_CANCELED;
+        device->base.notify(&msg);
+    }
+
+    return rv;
 }
 
 #define MAX_FINGERPRINTS 100
