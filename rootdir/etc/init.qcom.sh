@@ -50,8 +50,8 @@ start_msm_irqbalance_8952()
 
 start_copying_prebuilt_qcril_db()
 {
-    if [ -f /system/vendor/qcril.db -a ! -f /data/misc/radio/qcril.db ]; then
-        cp /system/vendor/qcril.db /data/misc/radio/qcril.db
+    if [ -f /vendor/qcril.db -a ! -f /data/misc/radio/qcril.db ]; then
+        cp /vendor/qcril.db /data/misc/radio/qcril.db
         chown -h radio.radio /data/misc/radio/qcril.db
     fi
 }
@@ -70,7 +70,7 @@ mkdir /data/misc/radio/modem_config
 chmod 770 /data/misc/radio/modem_config
 cp -r /firmware/image/modem_pr/mcfg/configs/* /data/misc/radio/modem_config
 chown -hR radio.radio /data/misc/radio/modem_config
-cp /system/etc/mbn_ota.txt /data/misc/radio/modem_config
+cp /vendor/etc/mbn_ota.txt /data/misc/radio/modem_config
 chown radio.radio /data/misc/radio/modem_config/mbn_ota.txt
 echo 1 > /data/misc/radio/copy_complete
 chown radio:radio /data/misc/radio/copy_complete

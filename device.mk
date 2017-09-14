@@ -312,7 +312,7 @@ PRODUCT_PACKAGES += \
     Stk
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/mbn_ota.txt:system/etc/mbn_ota.txt
+    $(LOCAL_PATH)/configs/mbn_ota.txt:$(TARGET_COPY_OUT_VENDOR)/etc/mbn_ota.txt
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/dsi_config.xml:system/etc/data/dsi_config.xml \
