@@ -320,16 +320,16 @@ on post-fs-data
     mkdir /data/misc/fm 0770 system system
     chmod 0770 /data/misc/fm
 
-service qcomsysd /system/bin/qcom-system-daemon
+service qcomsysd /vendor/bin/qcom-system-daemon
     class main
     user root
     group root diag
 
-service ssr_setup /system/bin/ssr_setup
+service ssr_setup /vendor/bin/ssr_setup
     oneshot
     disabled
 
-service ss_ramdump /system/bin/subsystem_ramdump
+service ss_ramdump /vendor/bin/subsystem_ramdump
     class main
     user system
     group system
@@ -396,34 +396,34 @@ on property:vold.decrypt=trigger_restart_framework
 on property:persist.env.fastdorm.enabled=true
     setprop persist.radio.data_no_toggle 1
 
-service cnd /system/bin/cnd
+service cnd /vendor/bin/cnd
     class main
     socket cnd stream 660 root inet
     writepid /dev/cpuset/system-background/tasks
-    setenv LD_LIBRARY_PATH /system/vendor/lib64/legacy
+    setenv LD_LIBRARY_PATH /vendor/lib64/legacy
 
-service dpmd /system/bin/dpmd
+service dpmd /vendor/bin/dpmd
     class late_start
     socket dpmd stream 660 root system
     group system readproc
 
-service irsc_util /system/bin/irsc_util "/etc/sec_config"
+service irsc_util /vendor/bin/irsc_util "/etc/sec_config"
     class main
     user root
     oneshot
 
-service rmt_storage /system/bin/rmt_storage
+service rmt_storage /vendor/bin/rmt_storage
     class core
     user root
     group root wakelock
     writepid /dev/cpuset/system-background/tasks
 
-service rfs_access /system/bin/rfs_access
+service rfs_access /vendor/bin/rfs_access
    class core
    user root
    group system net_raw
 
-service tftp_server /system/bin/tftp_server
+service tftp_server /vendor/bin/tftp_server
    class main
    user root
    group root wakelock 3012
@@ -434,7 +434,7 @@ on property:wc_transport.start_hci=true
 on property:wc_transport.start_hci=false
     stop start_hci_filter
 
-service start_hci_filter /system/bin/wcnss_filter
+service start_hci_filter /vendor/bin/wcnss_filter
     class late_start
     user root
     group bluetooth diag
@@ -446,19 +446,19 @@ on property:wc_transport.start_root=true
 on property:wc_transport.start_root=false
     stop hci_filter_root
 
-service hci_filter_root /system/bin/wcnss_filter
+service hci_filter_root /vendor/bin/wcnss_filter
     class late_start
     user bluetooth
     group bluetooth system diag
     disabled
 
-service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
+service config_bluetooth /system/bin/sh /vendor/etc/init.qcom.bt.sh "onboot"
     class core
     user root
     oneshot
     seclabel u:r:qti_init_shell:s0
 
-service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+service hciattach /system/bin/sh /vendor/etc/init.qcom.bt.sh
     class late_start
     user bluetooth
     group bluetooth net_bt_admin
@@ -472,82 +472,82 @@ on property:bluetooth.hciattach=true
 on property:bluetooth.hciattach=false
     setprop bluetooth.status off
 
-service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
+service bt-dun /vendor/bin/dun-server /dev/smd7 /dev/rfcomm0
     class late_start
     user bluetooth
     group bluetooth net_bt_admin inet
     disabled
     oneshot
 
-service bt-sap /system/bin/sapd 15
+service bt-sap /vendor/bin/sapd 15
     user bluetooth
     group bluetooth net_bt_admin
     class late_start
     disabled
     oneshot
 
-service btsnoop /system/bin/btsnoop
+service btsnoop /vendor/bin/btsnoop
    user bluetooth
    group bluetooth net_bt_admin sdcard_rw sdcard_r media_rw
    class late_start
    disabled
    oneshot
 
-service ftmd  /system/bin/ftmdaemon
+service ftmd  /vendor/bin/ftmdaemon
     class late_start
     user root
     group bluetooth net_bt_admin misc net_bt
     disabled
     oneshot
 
-service bridgemgrd /system/bin/bridgemgrd
+service bridgemgrd /vendor/bin/bridgemgrd
     class late_start
     user radio
     group radio diag
     disabled
 
-service port-bridge /system/bin/port-bridge /dev/mhi_pipe_32 /dev/ttyGS0
+service port-bridge /vendor/bin/port-bridge /dev/mhi_pipe_32 /dev/ttyGS0
     class main
     user radio system
     group radio system inet
     disabled
     oneshot
 
-service qmiproxy /system/bin/qmiproxy
+service qmiproxy /vendor/bin/qmiproxy
     class main
     user radio
     group radio diag
     disabled
 
 # QMUX must be in multiple groups to support external process connections
-service qmuxd /system/bin/qmuxd
+service qmuxd /vendor/bin/qmuxd
     class main
     user root
     group radio audio bluetooth gps nfc diag
     disabled
     writepid /dev/cpuset/system-background/tasks
 
-service netmgrd /system/bin/netmgrd
+service netmgrd /vendor/bin/netmgrd
     class main
     disabled
     writepid /dev/cpuset/system-background/tasks
     setenv LD_LIBRARY_PATH /system/vendor/lib64/legacy
 
-service ipacm /system/bin/ipacm
+service ipacm /vendor/bin/ipacm
     class main
     user net_admin
     group net_admin inet
     disabled
     writepid /dev/cpuset/system-background/tasks
 
-service qti /system/vendor/bin/qti
+service qti /vendor/bin/qti
     class main
     user radio
     group radio net_raw diag usb net_admin
     disabled
     writepid /dev/cpuset/system-background/tasks
 
-service sensors /system/bin/sensors.qcom
+service sensors /vendor/bin/sensors.qcom
     class late_start
     user root
     group root wakelock 3011
@@ -582,16 +582,16 @@ service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
     disabled
     oneshot
 
-service cnss-daemon /system/bin/cnss-daemon -n -l
+service cnss-daemon /vendor/bin/cnss-daemon -n -l
     class late_start
     oneshot
 
-service loc_launcher /system/bin/loc_launcher
+service loc_launcher /vendor/bin/loc_launcher
     #loc_launcher will start as root and set its uid to gps
     class late_start
     group gps inet net_raw diag net_admin wifi
 
-service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
+service fm_dl /system/bin/sh /vendor/etc/init.qcom.fm.sh
     class late_start
     user system
     group system
@@ -605,14 +605,14 @@ service qcom-sh /system/bin/sh /init.qcom.sh
     oneshot
     seclabel u:r:qti_init_shell:s0
 
-service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
+service qcom-post-boot /system/bin/sh /vendor/etc/init.qcom.post_boot.sh
     class late_start
     user root
     disabled
     oneshot
     seclabel u:r:qti_init_shell:s0
 
-service config-zram /system/bin/sh /system/etc/init.qcom.zram.sh
+service config-zram /system/bin/sh /vendor/etc/init.qcom.zram.sh
     class late_start
     user root
     disabled
@@ -624,13 +624,13 @@ on property:sys.boot_completed=1
     start atfwd
     start config-zram
 
-service atfwd /system/bin/ATFWD-daemon
+service atfwd /vendor/bin/ATFWD-daemon
     class late_start
     user system
     disabled
     group system radio
 
-service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
+service ims_regmanager /vendor/bin/exe-ims-regmanagerprocessnative
     class late_start
     group net_bt_admin inet radio wifi
     disabled
@@ -642,7 +642,7 @@ on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
-service battery_monitor /system/bin/battery_monitor
+service battery_monitor /vendor/bin/battery_monitor
     user system
     group system
     disabled
@@ -674,7 +674,7 @@ service charger /charger
     group system graphics
     seclabel u:r:charger:s0
 
-service charger_monitor /system/bin/charger_monitor
+service charger_monitor /vendor/bin/charger_monitor
     user root
     group root
     disabled
@@ -697,20 +697,20 @@ service bms-sh /system/bin/sh /init.qcom.bms.sh
     oneshot
     seclabel u:r:qti_init_shell:s0
 
-service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
+service msm_irqbalance /vendor/bin/msm_irqbalance -f /vendor/etc/msm_irqbalance.conf
     class core
     user root
     group root
     disabled
 
-service msm_irqbal_lb /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance_little_big.conf
+service msm_irqbal_lb /vendor/bin/msm_irqbalance -f /vendor/etc/msm_irqbalance_little_big.conf
     class core
     user root
     group root
     disabled
 
 # Coresight early boot service
-service cs-early-boot /system/bin/sh /persist/coresight/qdss.agent.sh early-boot /system/etc/init.qcom.debug.sh
+service cs-early-boot /system/bin/sh /persist/coresight/qdss.agent.sh early-boot /vendor/etc/init.qcom.debug.sh
     class core
     user root
     oneshot

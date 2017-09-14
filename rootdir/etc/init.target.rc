@@ -87,7 +87,7 @@ on post-fs-data
     chmod 0660 /sys/class/devfreq/gpubw/min_freq
 
 #start camera server as daemon
-service qcamerasvr /system/bin/mm-qcamera-daemon
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
@@ -101,7 +101,7 @@ on property:ro.config.zram=true
     swapon_all fstab.qcom
     write /proc/sys/vm/swappiness 100
 
-service qfp-daemon /system/bin/qfp-daemon
+service qfp-daemon /vendor/bin/qfp-daemon
     class late_start
     user system
     group system drmrpc
@@ -113,26 +113,26 @@ on property:persist.usb.chgdisabled=1
 on property:persist.usb.chgdisabled=0
     write /sys/class/power_supply/battery/charging_enabled 1
 
-service qseecomd /system/bin/qseecomd
+service qseecomd /vendor/bin/qseecomd
     class core
     user root
     group root
     writepid /dev/cpuset/system-background/tasks
 
-service perfd /system/vendor/bin/perfd
+service perfd /vendor/bin/perfd
     class main
     user root
     group system
     writepid /dev/cpuset/system-background/tasks
 
-service seempd /system/bin/seempd
+service seempd /vendor/bin/seempd
     class late_start
     user system
     group system
     socket seempdw dgram 0666 system system
     oneshot
 
-service thermal-engine /system/vendor/bin/thermal-engine
+service thermal-engine /vendor/bin/thermal-engine
     class main
     user root
     socket thermal-send-client stream 0666 system system
@@ -141,13 +141,13 @@ service thermal-engine /system/vendor/bin/thermal-engine
     group root
     writepid /dev/cpuset/system-background/tasks
 
-service time_daemon /system/bin/time_daemon
+service time_daemon /vendor/bin/time_daemon
     class late_start
     user root
     group root radio
     writepid /dev/cpuset/system-background/tasks
 
-service audiod /system/bin/audiod
+service audiod /vendor/bin/audiod
     class late_start
     user system
     group system
@@ -173,19 +173,19 @@ on boot
     chmod 0660 /sys/android_touch/sweep2wake
     chmod 0660 /sys/android_touch/vib_strength
 
-service wcnss-service /system/bin/wcnss_service
+service wcnss-service /vendor/bin/wcnss_service
     class main
     user system
     group system wifi radio
     oneshot
 
-service imsqmidaemon /system/bin/imsqmidaemon
+service imsqmidaemon /vendor/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
     group radio log diag
 
-service imsdatadaemon /system/bin/imsdatadaemon
+service imsdatadaemon /vendor/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
@@ -195,14 +195,14 @@ service imsdatadaemon /system/bin/imsdatadaemon
 on property:sys.ims.QMI_DAEMON_STATUS=1
     start imsdatadaemon
 
-service ims_rtp_daemon /system/bin/ims_rtp_daemon
+service ims_rtp_daemon /vendor/bin/ims_rtp_daemon
    class main
    user system
    socket ims_rtpd stream 0660 system radio
    group radio diag inet log
    disabled
 
-service imscmservice /system/bin/imscmservice
+service imscmservice /vendor/bin/imscmservice
    class main
    user system
    group radio diag inet log
@@ -212,7 +212,7 @@ on property:sys.ims.DATA_DAEMON_STATUS=1
     start ims_rtp_daemon
     start imscmservice
 
-service ppd /system/vendor/bin/mm-pp-daemon
+service ppd /vendor/bin/mm-pp-daemon
     class late_start
     disabled
     user system
@@ -274,35 +274,35 @@ on charger
     rm /data/system/perfd/default_values
     start perfd
 
-service dts_configurator /system/bin/dts_configurator
+service dts_configurator /vendor/bin/dts_configurator
     class late_start
     user system
     group media audio
     oneshot
 
-service dtseagleservice /system/bin/dts_eagle_service
+service dtseagleservice /vendor/bin/dts_eagle_service
     class late_start
     user system
     group audio media
     disabled
 
-service adsprpcd /system/bin/adsprpcd
+service adsprpcd /vendor/bin/adsprpcd
     class main
     user media
     group media
 
-service hvdcp_opti /system/bin/hvdcp_opti
+service hvdcp_opti /vendor/bin/hvdcp_opti
     class main
     user root
     group root
 
-service per_mgr /system/bin/pm-service
+service per_mgr /vendor/bin/pm-service
     class core
     user system
     group system net_raw
     writepid /dev/cpuset/system-background/tasks
 
-service per_proxy /system/bin/pm-proxy
+service per_proxy /vendor/bin/pm-proxy
     class core
     user system
     group system
@@ -314,7 +314,7 @@ on property:init.svc.per_mgr=running
 on property:sys.shutdown.requested=*
     stop per_proxy
 
-service energy-awareness /system/bin/energy-awareness
+service energy-awareness /vendor/bin/energy-awareness
     class main
     user root
     group system
@@ -343,7 +343,7 @@ on boot
     write /dev/cpuset/top-app/cpus 0-5
     write /dev/cpuset/camera-daemon/cpus 0-3
 
-service gx_fpd /system/bin/gx_fpd
+service gx_fpd /vendor/bin/gx_fpd
     class late_start
     user system
     group system
