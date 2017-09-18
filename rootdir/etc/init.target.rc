@@ -58,7 +58,7 @@ on post-fs
     mkdir /cust/lost+found 0770 root root
 
     start qseecomd
-    exec u:r:qti_init_shell:s0 -- /init.qcom.qseecomd.sh
+    wait_for_prop sys.listeners.registered true
 
 on post-fs-data
     mkdir /data/tombstones 0771 system system
