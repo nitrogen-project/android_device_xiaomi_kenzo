@@ -31,7 +31,6 @@
 on early-init
     mkdir /firmware 0771 system system
     mkdir /system 0777 root root
-    symlink /data/tombstones /tombstones
     mkdir /dsp 0771 media media
 
 on init
@@ -61,11 +60,6 @@ on post-fs
     wait_for_prop sys.listeners.registered true
 
 on post-fs-data
-    mkdir /data/tombstones 0771 system system
-    mkdir /tombstones/modem 0771 system system
-    mkdir /tombstones/lpass 0771 system system
-    mkdir /tombstones/wcnss 0771 system system
-    mkdir /tombstones/dsps 0771 system system
     mkdir /persist/data/sfs 0700 system system
     mkdir /persist/data/tz 0700 system system
     mkdir /data/misc/dts 0770 media audio
