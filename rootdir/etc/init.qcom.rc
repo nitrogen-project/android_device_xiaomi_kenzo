@@ -649,17 +649,16 @@ service battery_monitor /vendor/bin/battery_monitor
 
 service ril-daemon /vendor/bin/hw/rild
     class main
-    socket rild stream 660 root radio
-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
-    socket rild-debug stream 660 radio system
     user radio
     group radio cache inet misc audio log readproc wakelock sdcard_r sdcard_rw diag net_raw
+    capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW
 
 service ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
     user radio
     disabled
     group radio cache inet misc audio log readproc wakelock sdcard_r sdcard_rw net_raw
+    capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW
 
 service ril-daemon3 /vendor/bin/hw/rild -c 3
     class main
