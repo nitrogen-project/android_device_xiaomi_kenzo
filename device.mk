@@ -293,8 +293,7 @@ PRODUCT_PACKAGES += \
     FM2 \
     libqcomfm_jni \
     qcom.fmradio \
-    qcom.fmradio.xml \
-    android.hardware.broadcastradio@1.0-impl
+    qcom.fmradio.xml
 
 # Consumerir
 PRODUCT_PACKAGES += \
@@ -307,7 +306,6 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-    android.hardware.radio@1.0-impl \
     libril_proxy \
     librmnetctl \
     libxml2 \
