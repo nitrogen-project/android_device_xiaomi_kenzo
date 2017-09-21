@@ -1,1 +1,2 @@
 allow location self:capability net_raw;
+allow location system_data_file:sock_file { write open create};

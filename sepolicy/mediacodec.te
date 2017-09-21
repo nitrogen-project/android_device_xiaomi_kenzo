@@ -1,2 +1,3 @@
 allow mediacodec firmware_file:dir search;
 allow mediacodec mpctl_socket:dir search;
+allow mediacodec mpctl_socket:sock_file { open read create write };

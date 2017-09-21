@@ -4,3 +4,4 @@ type_transition thermal-engine system_data_file:file thermal_data_file;
 
 allow thermal-engine system_data_file:dir rw_dir_perms;
 allow thermal-engine thermal_data_file:file create_file_perms;
+allow thermal-engine socket_device:sock_file { getattr create setattr};

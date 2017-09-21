@@ -1,2 +1,5 @@
+allow system_server mpctl_socket:sock_file { create open read write };
+allow system_server qmuxd_socket:sock_file { create open read write };
+allow system_server qmuxd_socket:dir { add_name };
 allow system_server lirc_device:chr_file rw_file_perms;
 binder_call(system_server, gx_fpd);

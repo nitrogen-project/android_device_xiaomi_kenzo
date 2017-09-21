@@ -1,0 +1,3 @@
+allow servicemanager per_mgr:file { open read };
+allow servicemanager per_mgr:dir { open read search };
+allow servicemanager per_mgr:process getattr;

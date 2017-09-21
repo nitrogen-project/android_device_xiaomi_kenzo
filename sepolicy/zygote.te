@@ -1,0 +1,1 @@
+allow zygote init:unix_stream_socket { getattr read listen write };

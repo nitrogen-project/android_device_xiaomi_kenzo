@@ -1,0 +1,3 @@
+allow hvdcp sysfs:dir { open read write };
+allow hvdcp sysfs:file { open read write };
+allow hvdcp self:capability { fsetid dac_override };

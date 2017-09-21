@@ -1,3 +1,4 @@
 allow radio system_app_data_file:dir getattr;
 
 allow radio net_radio_prop:property_service set;
+allow radio qmuxd_socket:sock_file { write read open};

@@ -4,7 +4,7 @@ allow qti_init_shell btnvtool_exec:file rx_file_perms;
 
 allow qti_init_shell proc_kernel_sched:file w_file_perms;
 allow qti_init_shell self:capability net_admin;
-allow qti_init_shell shell_exec:file r_file_perms;
+allow qti_init_shell shell_exec:file { r_file_perms entrypoint };
 allow qti_init_shell sysfs_devices_system_cpu:file w_file_perms;
 allow qti_init_shell sysfs_performance:dir search;
 allow qti_init_shell sysfs_performance:file w_file_perms;
@@ -16,3 +16,4 @@ allow qti_init_shell system_file:file execute_no_trans;
 allow qti_init_shell proc:file { open write read getattr setattr };
 allow qti_init_shell sysfs:file { open write read getattr setattr };
 allow qti_init_shell sysfs_rqstats:dir { read open search };
+allow qti_init_shell toolbox_exec:file { getattr execute read open execute_no_trans };
