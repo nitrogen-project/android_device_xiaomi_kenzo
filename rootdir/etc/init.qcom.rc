@@ -386,7 +386,6 @@ service cnd /vendor/bin/cnd
     class main
     socket cnd stream 660 root inet
     writepid /dev/cpuset/system-background/tasks
-    setenv LD_LIBRARY_PATH /vendor/lib64/legacy
 
 service dpmd /vendor/bin/dpmd
     class late_start
