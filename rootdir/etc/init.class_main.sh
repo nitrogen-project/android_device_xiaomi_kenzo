@@ -27,12 +27,10 @@
 #
 
 #
-# Copy qcril.db if needed for RIL
+# always use pure qcril.db to fix "Could not query 11 database disk image is malformed"
 #
-if [ -f /vendor/qcril.db -a ! -f /data/misc/radio/qcril.db ]; then
-    cp /vendor/qcril.db /data/misc/radio/qcril.db
-    chown -h radio.radio /data/misc/radio/qcril.db
-fi
+cp /vendor/qcril.db /data/misc/radio/qcril.db
+chown -h radio.radio /data/misc/radio/qcril.db
 echo 1 > /data/misc/radio/db_check_done
 chown radio.radio /data/misc/radio/db_check_done
 
