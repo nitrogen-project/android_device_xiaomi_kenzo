@@ -8,3 +8,4 @@ allow hal_fingerprint_default fpc_data_file:dir { open read write remove_name ad
 allow hal_fingerprint_default fpc_data_file:sock_file { open read write create unlink };
 allow hal_fingerprint_default system_prop:property_service { set };
 allow hal_fingerprint_default property_socket:sock_file { open read write create unlink };
+allow hal_fingerprint_default fingerprint_service:service_manager find;

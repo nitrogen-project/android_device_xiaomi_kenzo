@@ -2,4 +2,6 @@ allow system_server mpctl_socket:sock_file { create open read write };
 allow system_server qmuxd_socket:sock_file { create open read write };
 allow system_server qmuxd_socket:dir { add_name };
 allow system_server lirc_device:chr_file rw_file_perms;
+allow system_server per_mgr_service:service_manager find;
+allow system_server default_android_service:service_manager find;
 binder_call(system_server, gx_fpd);
