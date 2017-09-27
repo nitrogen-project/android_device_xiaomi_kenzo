@@ -32,9 +32,6 @@ on early-init
     mkdir /firmware 0771 system system
     mkdir /dsp 0771 media media
 
-on init
-    mkdir /cust 0771 system system
-
 on fs
     wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
@@ -45,15 +42,6 @@ on post-fs
     mkdir /persist/data 0700 system system
     restorecon_recursive /persist
     restorecon_recursive /dsp
-
-    # We chown/chmod /cust again so because mount is run as root + defaults
-    chown system system /cust
-    chmod 0771 /cust
-    # We restorecon /cust in case the cust partition has been reset.
-    restorecon_recursive /cust
-
-    # create the lost+found directories, so as to enforce our permissions
-    mkdir /cust/lost+found 0770 root root
 
     start qseecomd
     wait_for_prop sys.listeners.registered true
