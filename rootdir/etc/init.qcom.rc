@@ -194,6 +194,19 @@ on boot
     # Allow access for CCID command/response timeout configuration
     chown system system /sys/module/ccid_bridge/parameters/bulk_msg_timeout
 
+    # bluetooth init
+    setprop ro.qualcomm.bluetooth.opp true
+    setprop ro.qualcomm.bluetooth.hfp true
+    setprop ro.qualcomm.bluetooth.hsp true
+    setprop ro.qualcomm.bluetooth.pbap true
+    setprop ro.qualcomm.bluetooth.ftp true
+    setprop ro.qualcomm.bluetooth.nap true
+    setprop ro.bluetooth.sap true
+    setprop ro.bluetooth.dun true
+    setprop ro.qualcomm.bluetooth.map true
+    setprop ro.bluetooth.hfp.ver 1.7
+    setprop ro.qualcomm.bt.hci_transport smd
+
     # Wifi firmware reload path
     chown wifi wifi /sys/module/wlan/parameters/fwpath
 
@@ -347,27 +360,6 @@ on property:persist.debug.trace=1
     mkdir /data/core 0777 root root
     write /proc/sys/kernel/core_pattern "/data/core/%E.%p.%e"
 
-on property:bluetooth.sap.status=running
-    start bt-sap
-
-on property:bluetooth.sap.status=stopped
-    stop bt-sap
-
-on property:bluetooth.dun.status=running
-    start bt-dun
-
-on property:bluetooth.dun.status=stopped
-    stop bt-dun
-
-on property:ro.bluetooth.ftm_enabled=true
-    start ftmd
-
-on property:bluetooth.startbtsnoop=true
-    start btsnoop
-
-on property:bluetooth.startbtsnoop=false
-    stop btsnoop
-
 service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     class main
     user root
@@ -376,7 +368,6 @@ service qcom-c_main-sh /system/bin/sh /init.class_main.sh
 
 on property:vold.decrypt=trigger_restart_framework
     start qcom-c_main-sh
-    start config_bluetooth
     start wcnss-service
 
 on property:persist.env.fastdorm.enabled=true
@@ -437,12 +428,6 @@ service hci_filter_root /vendor/bin/wcnss_filter
     group bluetooth system diag
     disabled
 
-service config_bluetooth /system/bin/sh /vendor/etc/init.qcom.bt.sh "onboot"
-    class core
-    user root
-    oneshot
-    seclabel u:r:qti_init_shell:s0
-
 service hciattach /system/bin/sh /vendor/etc/init.qcom.bt.sh
     class late_start
     user bluetooth
@@ -456,34 +441,6 @@ on property:bluetooth.hciattach=true
 
 on property:bluetooth.hciattach=false
     setprop bluetooth.status off
-
-service bt-dun /vendor/bin/dun-server /dev/smd7 /dev/rfcomm0
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin inet
-    disabled
-    oneshot
-
-service bt-sap /vendor/bin/sapd 15
-    user bluetooth
-    group bluetooth net_bt_admin
-    class late_start
-    disabled
-    oneshot
-
-service btsnoop /vendor/bin/btsnoop
-   user bluetooth
-   group bluetooth net_bt_admin sdcard_rw sdcard_r media_rw
-   class late_start
-   disabled
-   oneshot
-
-service ftmd  /vendor/bin/ftmdaemon
-    class late_start
-    user root
-    group bluetooth net_bt_admin misc net_bt
-    disabled
-    oneshot
 
 service bridgemgrd /vendor/bin/bridgemgrd
     class late_start
