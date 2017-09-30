@@ -1,3 +1,6 @@
 allow init debugfs:file write;
 allow init system_data_file:file append;
 allow init diag_device:chr_file { open read write };
+allow init self:netlink_route_socket { read };
+allow init mpctl_socket:sock_file { open read write };
+allow init tee_device:chr_file { ioctl open read write };

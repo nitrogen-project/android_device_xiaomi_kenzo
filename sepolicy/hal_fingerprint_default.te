@@ -9,3 +9,4 @@ allow hal_fingerprint_default fpc_data_file:sock_file { open read write create u
 allow hal_fingerprint_default system_prop:property_service { set };
 allow hal_fingerprint_default property_socket:sock_file { open read write create unlink };
 allow hal_fingerprint_default fingerprint_service:service_manager find;
+allow hal_fingerprint_default gx_fpd_service:service_manager find;
