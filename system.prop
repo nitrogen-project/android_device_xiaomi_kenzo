@@ -241,5 +241,3 @@ persist.fuse_sdcard=true
 
 # Optimal dex2oat threads for faster app installation
 ro.sys.fw.dex2oat_thread_count=4
-
-ro.sys.sdcardfs=false
