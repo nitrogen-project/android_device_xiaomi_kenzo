@@ -122,12 +122,6 @@ service thermal-engine /vendor/bin/thermal-engine
     group root
     writepid /dev/cpuset/system-background/tasks
 
-service time_daemon /vendor/bin/time_daemon
-    class late_start
-    user root
-    group root radio
-    writepid /dev/cpuset/system-background/tasks
-
 service audiod /vendor/bin/audiod
     class late_start
     user system
@@ -280,7 +274,7 @@ service hvdcp_opti /vendor/bin/hvdcp_opti
 service per_mgr /vendor/bin/pm-service
     class core
     user system
-    group system net_raw
+    group system
     writepid /dev/cpuset/system-background/tasks
 
 service per_proxy /vendor/bin/pm-proxy

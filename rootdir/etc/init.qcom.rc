@@ -566,12 +566,6 @@ on property:sys.boot_completed=1
     start atfwd
     start config-zram
 
-service atfwd /vendor/bin/ATFWD-daemon
-    class late_start
-    user system
-    disabled
-    group system radio
-
 service ims_regmanager /vendor/bin/exe-ims-regmanagerprocessnative
     class late_start
     group net_bt_admin inet radio wifi
@@ -656,6 +650,12 @@ service cs-post-boot /system/bin/sh /persist/coresight/qdss.agent.sh
     oneshot
     seclabel u:r:qti_init_shell:s0
 
+service time_daemon /vendor/bin/time_daemon
+    class main
+    user root
+    group root
+    writepid /dev/cpuset/system-background/tasks
+
 on property:sys.boot_completed=1
     start cs-post-boot
 
@@ -664,14 +664,3 @@ on property:sys.dbg.coresight.enable=1
 
 on property:sys.dbg.coresight.enable=0
     write /persist/coresight/enable 0
-
-# bugreport is triggered by developer options
-service bugreport /system/bin/dumpstate -d -p -B \
-        -o /data/data/com.android.shell/files/bugreports/bugreport
-    class main
-    disabled
-    oneshot
-
-on property:vold.decrypt=trigger_restart_min_framework
-    start time_daemon
-
