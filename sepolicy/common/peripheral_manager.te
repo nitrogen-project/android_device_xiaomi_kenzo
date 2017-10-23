@@ -1,0 +1,32 @@
+# Policy for peripheral_manager
+# per_mgr - peripheral_manager domain
+type per_mgr, domain;
+
+type per_mgr_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(per_mgr);
+
+# Needed for binder transactions
+use_per_mgr(per_mgr)
+allow per_mgr per_mgr_service:service_manager { add };
+
+allow per_mgr self:socket create_socket_perms;
+allowxperm per_mgr self:socket ioctl msm_sock_ipc_ioctls;
+
+
+# Needed by ipc_router
+allow per_mgr self:capability { net_bind_service net_raw };
+
+# Needed to power on the peripheral
+allow per_mgr ssr_device:chr_file r_file_perms;
+
+# Needed by libmdmdetect to figure out the system configuration
+r_dir_file(per_mgr, sysfs_esoc)
+
+# Needed by libmdmdetect to get subsystem info and to check their states
+r_dir_file(per_mgr, sysfs_ssr)
+r_dir_file(per_mgr, firmware_file)
+r_dir_file(per_mgr, sysfs)
+allow per_mgr sysfs_data:file r_file_perms;
+
+# Set the peripheral state property
+set_prop(per_mgr, per_mgr_state_prop);

@@ -1,0 +1,23 @@
+type atfwd, domain;
+type atfwd_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(atfwd)
+
+allow atfwd self:socket create_socket_perms;
+allowxperm atfwd self:socket ioctl msm_sock_ipc_ioctls;
+
+binder_call(atfwd, system_app);
+
+r_dir_file(atfwd, sysfs_ssr);
+r_dir_file(atfwd, sysfs_esoc);
+r_dir_file(atfwd, sysfs_data);
+
+set_prop(atfwd, radio_prop)
+
+hwbinder_use(atfwd)
+get_prop(atfwd, hwservicemanager_prop)
+
+#diag
+userdebug_or_eng(`
+    diag_use(atfwd)
+')

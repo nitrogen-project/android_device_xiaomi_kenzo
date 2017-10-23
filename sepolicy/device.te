@@ -1,4 +1,0 @@
-type lirc_device, dev_type;
-type dsp_block_device, dev_type;
-type persist_block_device, dev_type;
-type cust_block_device, dev_type;

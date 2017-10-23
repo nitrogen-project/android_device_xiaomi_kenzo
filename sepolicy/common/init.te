@@ -1,0 +1,51 @@
+# Adding allow rule for search on /fuse
+allow init fuse:dir { search mounton };
+allow init self:capability sys_module;
+allow init {
+    adsprpcd_file
+    cache_file
+    persist_file
+    storage_file
+}:dir mounton;
+allow init kmsg_device:chr_file write;
+
+#Allow triggering IPA FWs loading
+allow init ipa_dev:chr_file write;
+
+#For insmod to search module key for signature verification
+allow init kernel:key search;
+
+#For sdcard
+allow init tmpfs:lnk_file create_file_perms;
+
+#Certain domains needs LD_PRELOAD passed from init
+#allow it for most domain. Do not honor LD_PRELOAD
+#for lmkd
+#allow init { domain -lmkd }:process noatsecure;
+
+#For configfs file permission
+allow init configfs:dir r_dir_perms;
+allow init configfs:file { rw_file_perms link };
+allow init configfs:lnk_file create_file_perms;
+
+#Allow init to mount non-hlos partitions in A/B builds
+allow init firmware_file:dir { mounton };
+allow init bt_firmware_file:dir { mounton };
+
+#dontaudit non configfs usb denials
+dontaudit init sysfs:dir write;
+
+#load /vendor/lib/modules/qca_cld3/qca_cld3_wlan.ko
+#load /vendor/lib/modules/wil6210.ko
+allow init vendor_file:system module_load;
+
+#Needed for restorecon. Init already has these permissions
+#for generic block devices, but is unable to access those
+#which have a custom lable added by us.
+allow init {
+    custom_ab_block_device
+    boot_block_device
+    xbl_block_device
+    ssd_device
+    modem_block_device
+}:{ blk_file lnk_file } relabelto;

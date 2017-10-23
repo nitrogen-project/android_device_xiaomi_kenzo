@@ -1,0 +1,21 @@
+type wfdservice, domain;
+type wfdservice_exec, exec_type, vendor_file_type, file_type;
+
+#allow access to sysfs to know HDMI repeater state
+allow wfdservice sysfs_graphics:file rw_file_perms;
+
+#Allow access to firmware files for HDCP session
+r_dir_file(wfdservice, firmware_file)
+
+#Allow wfdservice to use Binder IPC
+#binder_use(wfdservice)
+
+#Allow hardware binder use
+hwbinder_use(wfdservice)
+get_prop(wfdservice, hwservicemanager_prop)
+
+#Allow hal graphics mapper permissions
+hal_client_domain(wfdservice, hal_graphics_composer);
+
+#Allow hal graphics allocator permissions
+hal_client_domain(wfdservice, hal_graphics_allocator);

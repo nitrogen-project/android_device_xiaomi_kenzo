@@ -1,2 +1,0 @@
-allow hostapd cnd:unix_dgram_socket rw_socket_perms;
-allow hostapd diag_device:chr_file rw_file_perms;

@@ -1,0 +1,71 @@
+#integrated sensor process
+type ims, domain;
+type ims_exec, exec_type, vendor_file_type, file_type;
+
+# Started by init
+init_daemon_domain(ims)
+net_domain(ims)
+
+# Talk to qmuxd
+qmux_socket(ims)
+
+allow ims self:capability net_bind_service;
+
+# Use generic netlink socket
+allow ims self:{
+    netlink_socket
+    socket
+    netlink_generic_socket
+} create_socket_perms_no_ioctl;
+
+# To run NDC command
+allow ims {
+    shell_exec
+    vendor_shell_exec
+    system_file
+    # IMS route installation
+    wcnss_service_exec
+    # for WPA supplicant comment to remove compilation issue
+    #wpa_exec
+}:file rx_file_perms;
+
+# Talk to netd via netd_socket
+unix_socket_connect(ims, netd, netd)
+
+# Talk to qumuxd via ims_socket
+unix_socket_connect(ims, ims, qmuxd)
+
+#Add connectionmanager service
+allow ims imscm_service:service_manager add;
+
+set_prop(ims, qcom_ims_prop)
+
+# permissions needed for IMS to connect and interact with WPA supplicant
+# comment to remove compilation
+#unix_socket_send(ims, wpa, wpa)
+allow ims wpa_socket:dir w_dir_perms;
+allow ims wpa_socket:sock_file { create unlink setattr };
+allow ims wifi_data_file:dir r_dir_perms;
+
+# permissions for communication with CNE in LBO use case
+unix_socket_connect(ims, cnd, cnd)
+
+#Allow access to netmgrd socket
+netmgr_socket(ims);
+
+# Inherit and use open files from radio.
+allow ims radio:fd use;
+
+#diag
+userdebug_or_eng(`
+    diag_use(ims)
+')
+allow ims self:{ socket udp_socket } ioctl;
+# ioctlcmd=c302
+allowxperm ims self:socket ioctl msm_sock_ipc_ioctls;
+# ioctlcmd=89fd
+allowxperm ims self:udp_socket ioctl priv_sock_ioctls;
+allow ims sysfs:file r_file_perms;
+allow ims sysfs_data:file r_file_perms;
+
+get_prop(ims, qcom_ims_prop)

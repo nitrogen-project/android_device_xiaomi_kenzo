@@ -1,0 +1,20 @@
+
+# AOSP replaced wpa with new definition. this file to be
+# deleted once we have new definition and existing rules are modified
+
+#allow wpa persist_file:dir search;
+#qmux_socket(wpa);
+
+#allow wpa self:socket create_socket_perms_no_ioctl;
+#allow wpa smem_log_device:chr_file rw_file_perms;
+#allow wpa proc_net:file write;
+
+allow hal_wifi_supplicant wifi_vendor_data_file:dir create_dir_perms;
+allow hal_wifi_supplicant wifi_vendor_data_file:dir w_dir_perms;
+allow hal_wifi_supplicant wifi_vendor_data_file:file create_file_perms;
+allow hal_wifi_supplicant wifi_vendor_wpa_socket:dir create_dir_perms;
+allow hal_wifi_supplicant wifi_vendor_wpa_socket:sock_file create_file_perms;
+
+# Permission for wpa socket which IMS use to communicate
+# Allow wpa_supplicant to send back wifi information to cnd
+allow hal_wifi_supplicant { cnd ims }:unix_dgram_socket sendto;

@@ -1,0 +1,23 @@
+r_dir_file(domain, sysfs_socinfo);
+r_dir_file(domain, sysfs_esoc);
+r_dir_file(domain, sysfs_ssr);
+
+dontaudit domain kernel:system module_request;
+
+# Allow all domains read access to sysfs_thermal
+r_dir_file(domain, sysfs_thermal);
+
+# Allow domain to read /vendor -> /system/vendor
+allow domain system_file:lnk_file getattr;
+
+allow { domain - appdomain } debug_gralloc_prop:file r_file_perms;
+
+not_full_treble(`allow domain vendor_file:dir r_dir_perms;')
+
+# Added now for smoother UI
+# Remove this after HIDL implementation
+userdebug_or_eng(`
+allow domain hal_graphics_composer:fd use;
+allow domain qti_debugfs:dir search;
+')
+dontaudit domain persist_dpm_prop:file r_file_perms;

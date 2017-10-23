@@ -1,4 +1,0 @@
-allow netmgrd self:capability dac_override;
-allow netmgrd net_data_file:dir { search read open write };
-allow netmgrd shell_exec:file { execute execute_no_trans read open getattr };
-

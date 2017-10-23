@@ -1,0 +1,39 @@
+type qti, domain;
+type qti_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(qti)
+net_domain(qti)
+
+allow qti {
+    rmnet_device
+    smem_log_device
+    mhi_device
+    smd_device
+    userdebug_or_eng(`kmsg_device')
+}:chr_file rw_file_perms;
+
+qmux_socket(qti)
+
+allow qti self:capability {
+    net_admin
+    net_raw
+    fsetid
+    sys_module
+    dac_override
+};
+
+allow qti self:{
+    netlink_socket
+    socket
+    udp_socket
+} create_socket_perms_no_ioctl;
+
+allow qti self:socket ioctl;
+allowxperm qti self:socket ioctl msm_sock_ipc_ioctls;
+allow qti { shell_exec vendor_shell_exec system_file }:file rx_file_perms;
+
+#diag
+userdebug_or_eng(`
+    diag_use(qti)
+    allow qti sysfs:file r_file_perms;
+    allow qti sysfs_data:file r_file_perms;
+')

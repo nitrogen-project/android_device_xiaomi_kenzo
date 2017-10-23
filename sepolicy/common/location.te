@@ -1,0 +1,85 @@
+# location - Location daemon
+type location, domain;
+type location_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(location)
+net_domain(location)
+
+# Socket is created by the daemon, not by init, and under /data/gps,
+# not under /dev/socket.
+type_transition location location_data_file:sock_file location_socket;
+
+qmux_socket(location)
+binder_use(location)
+binder_call(location, system_server)
+wakelock_use(location)
+
+allow location location_data_file:dir create_dir_perms;
+allow location location_data_file:{ file fifo_file } create_file_perms;
+allow location location_data_file:sock_file write;
+allow location location_exec:file x_file_perms;
+allow location location_socket:sock_file create_file_perms;
+allow location self:capability { setuid setgid net_admin net_bind_service net_raw };
+allow location self:{
+    socket
+    netlink_socket
+    netlink_generic_socket
+} create_socket_perms_no_ioctl;
+
+unix_socket_connect(location, sensors, sensors)
+allow location sensors_device:chr_file r_file_perms;
+allow location sensors_socket:sock_file rw_file_perms;
+allow location { shell_exec vendor_shell_exec }:file rx_file_perms;
+
+allow location system_server:unix_stream_socket { read write connectto};
+
+# For interfacing with the device sensorservice
+# permission check for slim daemon
+allow location { sensorservice_service permission_service }:service_manager find;
+
+hwbinder_use(location)
+get_prop(location, hwservicemanager_prop)
+
+allow location fwk_sensor_hwservice:hwservice_manager find;
+
+allow location sensors_persist_file:dir r_dir_perms;
+allow location sensors_persist_file:file r_file_perms;
+
+#wifi
+userdebug_or_eng(`
+allow location wifi_data_file:dir create_dir_perms;
+allow location wifi_data_file:sock_file create_file_perms;
+allow location su:unix_dgram_socket sendto;
+')
+# comment to remove compilation issue
+#unix_socket_send(wpa, location, location)
+#allow location wpa:unix_dgram_socket sendto;
+allow location wpa_socket:dir rw_dir_perms;
+allow location wpa_socket:sock_file create_file_perms;
+
+allow location rfs_shared_hlos_file:dir r_dir_perms;
+allow location rfs_shared_hlos_file:file rw_file_perms;
+
+dontaudit location domain:dir r_dir_perms;
+r_dir_file(location, netmgrd)
+allow location persist_file:dir r_dir_perms;
+
+#Allow access to netmgrd socket
+netmgr_socket(location);
+
+#Allow access to properties
+set_prop(location, location_prop);
+
+#diag
+userdebug_or_eng(`
+    diag_use(location)
+')
+allow location sysfs:file r_file_perms;
+allow location sysfs_data:file r_file_perms;
+allow location self:socket ioctl;
+# ioctlcmd=c304
+allowxperm location self:socket ioctl msm_sock_ipc_ioctls;
+allow location self:udp_socket ioctl;
+allow location wifi_prop:file r_file_perms;
+# Replace this with macro
+allowxperm location self:udp_socket ioctl priv_sock_ioctls;

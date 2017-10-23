@@ -1,0 +1,63 @@
+#Adding all bt related service to bt domains
+type sapd, bluetoothdomain;
+type sapd_exec, exec_type, vendor_file_type, file_type;
+
+type btsnoop, bluetoothdomain;
+type btsnoop_exec, exec_type, vendor_file_type, file_type;
+
+type bt_logger, bluetoothdomain;
+type bt_logger_exec, exec_type, vendor_file_type, file_type;
+
+type btnvtool, bluetoothdomain;
+type btnvtool_exec, exec_type, vendor_file_type, file_type;
+domain_auto_trans(qti_init_shell, btnvtool_exec, bluetooth)
+allow bluetooth qti_init_shell:fd use;
+allow bluetooth qti_init_shell:fifo_file rw_file_perms;
+
+type fmhal_service, bluetoothdomain;
+type fmhal_service_exec, exec_type, vendor_file_type, file_type;
+
+allow bluetooth bluetooth_prop:property_service set;
+allow bluetooth sysfs_bluetooth_writable:file w_file_perms;
+
+#Access to /data/media
+allow bluetooth media_rw_data_file:dir create_dir_perms;
+allow bluetooth media_rw_data_file:file create_file_perms;
+#allow proc_sysrq access for crash dump
+userdebug_or_eng(`
+ allow bluetooth proc_sysrq:file w_file_perms;
+ allow bluetooth qti_debugfs:file r_file_perms;
+')
+
+allow bluetooth {
+    uhid_device
+    #input_device
+    serial_device
+    #BT needes read and write on smd device node
+    smd_device
+    bt_device
+}:chr_file rw_file_perms;
+
+#Access to persist_file
+allow bluetooth persist_bluetooth_file:dir rw_dir_perms;
+allow bluetooth persist_bluetooth_file:file create_file_perms;
+r_dir_file(bluetooth, persist_file)
+allow bluetooth persist_file:file w_file_perms;
+
+allow bluetooth self:socket { create write getopt read };
+
+#For bluetooth firmware
+r_dir_file(bluetooth, bt_firmware_file)
+
+#dun-server requires binding with system_app and servicemanager
+binder_use(bluetooth);
+binder_call(bluetooth, system_app);
+binder_call(bluetooth, servicemanager);
+allow bluetooth dun_service:service_manager find;
+
+#sapd requires interaction with qmux sockets
+qmux_socket(bluetooth);
+
+# ioctlcmd=c302
+allow bluetooth self:socket ioctl;
+allowxperm bluetooth self:socket ioctl msm_sock_ipc_ioctls;

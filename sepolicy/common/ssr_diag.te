@@ -1,0 +1,8 @@
+type ssr_diag, domain;
+type ssr_diag_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(ssr_diag);
+
+userdebug_or_eng(`
+  allow ssr_diag sysfs:file w_file_perms;
+  diag_use(ssr_diag)
+')

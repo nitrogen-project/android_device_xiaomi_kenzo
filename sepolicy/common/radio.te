@@ -1,0 +1,15 @@
+# Talks to qmuxd via the qmux_radio socket.
+qmux_socket(radio);
+
+# IMS needs permission to use avtimer
+allow radio avtimer_device:chr_file r_file_perms;
+
+allow radio { cameraserver_service mediaextractor_service mediacodec_service }:service_manager find;
+#diag
+userdebug_or_eng(`
+    diag_use(radio)
+')
+
+# qcril needs permission to load mbn file from regional carrier
+allow radio regionalization_file:file r_file_perms;
+allow radio regionalization_file:dir r_dir_perms;

@@ -1,0 +1,16 @@
+#Add new domain for Location services
+user=gps domain=location_app type=location_app_data_file
+user=system seinfo=platform name=com.qualcomm.services.location domain=location_app type=location_app_data_file
+user=system seinfo=platform name=com.qualcomm.location.XT domain=location_app type=location_app_data_file
+
+#Add new domain for QSEE services
+user=system seinfo=platform name=com.qualcomm.qti.auth.fidocryptoservice domain=qsee_svc_app type=qsee_svc_app_data_file
+
+#Add new domain for DataServices
+user=system seinfo=platform name=.dataservices domain=dataservice_app type=system_app_data_file
+
+# AtFwd and FastDormancy apps
+user=system seinfo=platform name=com.qualcomm.telephony domain=qtelephony type=system_app_data_file
+
+# Add time service app
+user=system seinfo=platform name=com.qualcomm.timeservice domain=timeservice_app type=system_app_data_file

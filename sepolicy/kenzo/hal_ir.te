@@ -1,0 +1,3 @@
+type lirc_device, dev_type;
+
+allow hal_ir lirc_device:chr_file rw_file_perms;

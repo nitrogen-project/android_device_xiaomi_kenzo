@@ -1,0 +1,14 @@
+# audio daemon
+type audiod, domain;
+type audiod_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(audiod)
+allow audiod proc_audiod:file r_file_perms;
+allow audiod proc_audiod:dir r_dir_perms;
+allow audiod audio_device:chr_file rw_file_perms;
+#allow audiod audioserver_service:service_manager find;
+#binder_use(audiod)
+binder_call(audiod, audioserver)
+
+#allow acess to /sys/class/switch
+allow audiod sysfs_switch:file r_file_perms;
+allow audiod sysfs_switch:dir r_dir_perms;

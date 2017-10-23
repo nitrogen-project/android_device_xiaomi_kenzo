@@ -1,0 +1,87 @@
+#####################################
+# qmux_socket(clientdomain)
+# Allow client domain to connecto and send
+# via a local socket to the qmux domain.
+# Also allow the client domain to remove
+# its own socket.
+define(`qmux_socket', `
+allow $1 qmuxd_socket:dir create_dir_perms;
+unix_socket_connect($1, qmuxd, qmuxd)
+allow $1 qmuxd_socket:sock_file { read getattr write setattr create unlink };
+')
+
+#####################################
+# netmgr_socket(clientdomain)
+# Allow client domain to connecto and send
+# via a local socket to the netmgrd domain.
+# Also allow the client domain to remove
+# its own socket.
+define(`netmgr_socket', `
+allow $1 netmgrd_socket:dir r_dir_perms;
+unix_socket_connect($1, netmgrd, netmgrd)
+allow $1 netmgrd_socket:sock_file { read getattr write };
+')
+
+########################################
+# peripheral_manager
+# Allow clients to interact with peripheral
+# manager
+define(`use_per_mgr', `
+binder_use($1);
+binder_call(per_mgr, $1);
+binder_call($1, per_mgr);
+allow $1 per_mgr_service:service_manager find;
+get_prop($1, per_mgr_state_prop);
+')
+
+#####################################
+# cnd_nims_socket_perm(clientdomain)
+# allow cnd to read /proc/pid/cmdline to get appname
+# allow cnd to use inet socket created by app.
+define(`cnd_nims_socket_perm', `
+allow cnd $1:dir r_dir_perms;
+allow cnd $1:file r_file_perms;
+allow cnd $1:fd use;
+allow cnd $1:tcp_socket rw_socket_perms;
+')
+
+#####################################
+# diag_use(clientdomain)
+# allow clientdomain to read/write to diag
+define(`diag_use', `
+r_dir_file($1, sysfs_diag)
+allow $1 diag_device:chr_file rw_file_perms;
+')
+
+#####################################
+# use_netutils(clientdomain)
+# allow access to netutils from vendor
+define(`use_netutils', `
+domain_auto_trans($1, netutils_wrapper_exec, netutils_wrapper)
+allow netutils_wrapper $1:fd use;
+allow netutils_wrapper $1:fifo_file { read write getattr };
+allow netutils_wrapper $1:netlink_route_socket { read write };
+allow netutils_wrapper $1:unix_stream_socket { read write };
+allow netutils_wrapper $1:netlink_generic_socket { read write };
+allow netutils_wrapper $1:netlink_xfrm_socket { read write };
+allow netutils_wrapper $1:udp_socket { read write };
+allow netutils_wrapper $1:tcp_socket { read write };
+')
+
+#####################################
+## hal_server_domain_bypass(domain, hal_type)
+## Allow a base set of permissions required for a domain to offer a
+## HAL implementation of the specified type over HwBinder without
+## halserverdomain attribute
+##
+## For example, default implementation of Foo HAL:
+##   type hal_foo_default, domain;
+##   hal_server_domain_bypass(hal_foo_default, hal_foo)
+##
+define(`hal_server_domain_bypass', `
+hwbinder_use($1)
+allow $1 system_file:dir r_dir_perms;
+get_prop($1, hwservicemanager_prop)
+typeattribute $1 $2_server;
+typeattribute $1 $2;
+')

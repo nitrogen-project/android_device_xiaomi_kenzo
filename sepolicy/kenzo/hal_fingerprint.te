@@ -1,0 +1,15 @@
+type fpc_socket, file_type;
+type fpc_sysfs, fs_type, sysfs_type;
+type fpc_data_file, file_type, data_file_type;
+r_dir_file(hal_fingerprint, firmware_file)
+allow hal_fingerprint fpc_data_file:dir rw_dir_perms;
+allow hal_fingerprint fpc_data_file:sock_file { create unlink };
+allow hal_fingerprint fpc_sysfs:file rw_file_perms;
+allow hal_fingerprint storage_file:dir search;
+allow hal_fingerprint tee_device:chr_file rw_file_perms;
+allow hal_fingerprint uhid_device:chr_file rw_file_perms;
+allow hal_fingerprint sysfs_adc:dir r_dir_perms;
+
+allow hal_fingerprint_server gx_fpd_service:service_manager { find };
+binder_call(hal_fingerprint_server, gx_fpd);
+set_prop(hal_fingerprint, system_prop)

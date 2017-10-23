@@ -1,0 +1,83 @@
+# Copyright (c) 2017, The Linux Foundation. All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#    * Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#    * Neither the name of The Linux Foundation nor the names of its
+#      contributors may be used to endorse or promote products derived
+#      from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# This should be using hw binder. Added now for smoother UI
+#userdebug_or_eng(`
+#binder_use(hal_graphics_composer)
+#')
+
+userdebug_or_eng(`
+    diag_use(hal_graphics_composer)
+')
+allow hal_graphics_composer sdm_idle_time_prop:file r_file_perms;
+allow hal_graphics_composer_default self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
+allow hal_graphics_composer sysfs_graphics:dir r_dir_perms;
+allow hal_graphics_composer sysfs_graphics:file rw_file_perms;
+
+# Rules for brightness change during display calibration
+allow hal_graphics_composer sysfs_leds:dir r_dir_perms;
+allow hal_graphics_composer sysfs_leds:file rw_file_perms;
+allow hal_graphics_composer sysfs_leds:lnk_file read;
+
+# Rules for vdnbinder
+#binder_service(hal_graphics_composer_default);
+vndbinder_use(hal_graphics_composer_default);
+
+# Allow video node access
+allow hal_graphics_composer video_device:chr_file rw_file_perms;
+allow hal_graphics_composer video_device:dir r_dir_perms;
+
+# Allow reading/writing to '/data/vendor/display/*'
+allow hal_graphics_composer display_misc_file:dir create_dir_perms;
+allow hal_graphics_composer display_misc_file:file create_file_perms;
+
+# Allow reading/writing to 'persist/display/*'
+allow hal_graphics_composer persist_display_file:dir rw_dir_perms;
+allow hal_graphics_composer persist_display_file:file create_file_perms;
+
+# Allow only directory search to '/persist'
+allow hal_graphics_composer persist_file:dir r_dir_perms;
+
+# Allow dir search in '/oem'
+allow hal_graphics_composer oemfs:dir r_dir_perms;
+
+# Allow pps socket access
+#unix_socket_connect(hal_graphics_composer, pps, mm-pp-daemon)
+
+# TBD: remove when dependency on libpowermanager is removed
+#allow hal_graphics_composer power_service:service_manager find;
+
+# access to perflock
+allow hal_graphics_composer mpctl_socket:dir r_dir_perms;
+unix_socket_send(hal_graphics_composer, mpctl, perfd)
+unix_socket_connect(hal_graphics_composer, mpctl, perfd)
+unix_socket_send(hal_graphics_composer, mpctl, mpdecision)
+unix_socket_connect(hal_graphics_composer, mpctl, mpdecision)
+
+# Access /dev/graphics/fb0.
+allow hal_graphics_composer graphics_device:chr_file rw_file_perms;
+allow hal_graphics_composer graphics_device:dir r_dir_perms;

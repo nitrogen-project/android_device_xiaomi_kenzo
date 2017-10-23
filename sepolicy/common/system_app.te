@@ -1,0 +1,153 @@
+# Copyright (c) 2015-2016 Dolby Laboratories, Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# fm_radio app needes  open read write on fm_radio_device
+allow system_app fm_radio_device:chr_file r_file_perms;
+r_dir_file(system_app, fm_data_file);
+r_dir_file(system_app, bluetooth_data_file);
+r_dir_file(system_app, bt_firmware_file);
+
+allow system_app {
+    ctl_default_prop
+    fm_prop
+    ppd_prop
+}:property_service set;
+
+allow system_app {
+    atfwd_service
+    dun_service
+    # access to color service SDK
+    color_service
+}:service_manager add;
+
+# access to perflock
+allow system_app mpctl_socket:dir r_dir_perms;
+unix_socket_send(system_app, mpctl, mpdecision)
+unix_socket_connect(system_app, mpctl, mpdecision)
+unix_socket_send(system_app, mpctl, perfd)
+unix_socket_connect(system_app, mpctl, perfd)
+
+# access to mm-pp-daemon
+unix_socket_connect(system_app, pps, mm-pp-daemon)
+
+userdebug_or_eng(`
+  allow system_app qti_debugfs:file r_file_perms;
+  allow system_app su:unix_dgram_socket sendto;
+  allow system_app persist_file:dir r_dir_perms;
+  allow system_app sensors_persist_file:dir r_dir_perms;
+  allow system_app sensors_persist_file:file rw_file_perms;
+  # access to firmware file
+  r_dir_file(system_app, firmware_file);
+')
+
+allow system_app cnd_data_file:dir w_dir_perms;
+allow system_app cnd_data_file:file create_file_perms;
+allow system_app bluetooth:unix_stream_socket ioctl;
+
+# access to tee domain
+#allow system_app tee:unix_dgram_socket sendto;
+
+# system app to access DTS data files
+r_dir_file(system_app, dts_data_file)
+
+#access to wifi_ftmd
+allow system_app wififtmd_prop:property_service set;
+#unix_socket_send(system_app, wififtmd, wifi_ftmd)
+
+# allow system_app to interact with dtseagleservice
+binder_call(system_app, dtseagleservice)
+
+# allow system_app to interact with fido daemon
+binder_call(system_app, fidodaemon)
+
+# allow system_app to interact with imscm daemon
+binder_call(system_app, imscm)
+allow system_app imscm_service:service_manager find;
+
+# allow system_app to interact with fido daemon
+binder_call(system_app, fidodaemon)
+
+# allow system_app to interact with seemp health daemon
+binder_call(system_app, seemp_health_daemon)
+
+# allow system_app to interact with light hal
+hal_client_domain(system_app, hal_light);
+
+# iwconfig
+allow system_app wcnss_service_exec:file rx_file_perms;
+
+# bugreport
+allow system_app ctl_dumpstate_prop:property_service set;
+unix_socket_connect(system_app, dumpstate, dumpstate)
+
+# allow access to system_app for audio pp files
+r_dir_file(system_app, audio_pp_data_file);
+
+# allow access to system app for radio files
+allow system_app radio_data_file:dir rw_dir_perms;
+allow system_app radio_data_file:file create_file_perms;
+
+# DOLBY_START
+set_prop(system_app, dolby_prop)
+# DOLBY_END
+
+# allow system_app to access netd
+unix_socket_connect(system_app, netd, netd)
+
+allow system_app persist_file:dir rw_dir_perms;
+allow system_app persist_misc_file:dir rw_dir_perms;
+allow system_app persist_misc_file:file create_file_perms;
+
+# required for FM App to connectto wcnss_filter sockets
+# serial device ttyHS0 (transport layer for FM)
+allow system_app serial_device:chr_file rw_file_perms;
+set_prop(system_app, bluetooth_prop)
+# access unix sockets for fm application
+unix_socket_connect(system_app,bluetooth, bluetooth)
+# access  wcnss_filter from fm app
+#allow system_app wcnss_filter:unix_stream_socket connectto;
+
+# ANR
+allow system_app anr_data_file:dir r_dir_perms;
+allow system_app anr_data_file:file r_file_perms;
+# detect /data/anr directory is created
+allow system_app system_data_file:dir read;
+
+# allow access to ims helper
+#unix_socket_connect(system_app, ims, ims)
+
+#allow system_app access boot mode switch
+set_prop(system_app, boot_mode_prop);
+
+# allow access to cache recovery for LK3
+allow system_app cache_file:dir create_dir_perms;
+allow system_app cache_file:file create_file_perms;
+allow system_app cache_recovery_file:dir rw_dir_perms;
+allow system_app cache_recovery_file:file create_file_perms;
+
+#allow system_app access ioctl
+allowxperm system_app self:socket ioctl msm_sock_ipc_ioctls;
+allow system_app self:socket ioctl;
+
+allow system_app fm_prop:file r_file_perms;

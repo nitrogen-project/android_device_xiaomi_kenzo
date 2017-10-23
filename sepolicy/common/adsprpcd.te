@@ -1,0 +1,14 @@
+# adsprpcd daemon
+type adsprpcd, domain;
+type adsprpcd_exec, exec_type, vendor_file_type, file_type;
+
+# Started by init
+init_daemon_domain(adsprpcd)
+
+allow adsprpcd qdsp_device:chr_file r_file_perms;
+
+# For reading dir/files on /dsp
+r_dir_file(adsprpcd, adsprpcd_file)
+
+allow adsprpcd ion_device:chr_file r_file_perms;
+allow adsprpcd system_file:dir r_dir_perms;

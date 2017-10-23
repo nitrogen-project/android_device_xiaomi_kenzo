@@ -1,0 +1,33 @@
+type location_app, domain;
+app_domain(location_app)
+binder_use(location_app)
+hal_client_domain(location_app, hal_gnss)
+
+qmux_socket(location_app)
+
+net_domain(location_app)
+
+#Permissions for JDWP
+userdebug_or_eng(`
+  allow location_app { adbd su }:unix_stream_socket connectto;
+  allow location_app mediaserver_service:service_manager find;
+  allow location_app audioserver_service:service_manager find;
+  diag_use(location_app)
+')
+
+allow location_app surfaceflinger_service:service_manager find;
+allow location_app location_app_data_file:dir create_dir_perms;
+allow location_app location_app_data_file:file create_file_perms ;
+allow location_app location_data_file:dir rw_dir_perms;
+allow location_app location_data_file:sock_file create_file_perms;
+allow location_app self:socket create_socket_perms;
+#allow location_app system_app_data_file:dir r_dir_perms;
+allow location_app anr_data_file:dir rw_dir_perms;
+allow location_app anr_data_file:file rw_file_perms;
+allow location_app { app_api_service activity_service }:service_manager find;
+# ioctlcmd=c302
+allowxperm location_app self:socket ioctl msm_sock_ipc_ioctls;
+allow location_app sysfs:file r_file_perms;
+allow location_app sysfs_data:file r_file_perms;
+get_prop(location_app, debug_gralloc_prop)
+unix_socket_connect(location_app, dpmtcm, dpmd)

@@ -1,1 +1,0 @@
-allow cnd self:capability { net_raw setgid dac_override chown fsetid setuid };

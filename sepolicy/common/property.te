@@ -1,0 +1,108 @@
+# Copyright (c) 2015-2016 Dolby Laboratories, Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+type qcom_ims_prop, property_type;
+type ctl_qmuxd_prop, property_type;
+type ctl_netmgrd_prop, property_type;
+type ctl_port-bridge_prop, property_type;
+
+type freq_prop, property_type;
+type perfd_prop, property_type;
+type vm_bms_prop, property_type; #To start vm_bms
+type qti_prop, property_type;
+type ipacm_prop, property_type;
+type ipacm-diag_prop, property_type;
+type sensors_prop, property_type;
+type msm_irqbalance_prop, property_type;
+type msm_irqbl_sdm630_prop, property_type;
+type camera_prop, property_type;
+type spcomlib_prop, property_type;
+type sdm_idle_time_prop, property_type;
+type sf_lcd_density_prop, property_type;
+type scr_enabled_prop, property_type;
+type opengles_prop, property_type;
+type mdm_helper_prop, property_type;
+type mpdecision_prop, property_type;
+
+#Needed for  ubwc support
+type debug_gralloc_prop, property_type;
+
+type fm_prop, property_type;
+type chgdiabled_prop, property_type;
+
+#properites for netd
+type netd_prop, property_type;
+
+type xlat_prop, property_type;
+
+# property for location
+type location_prop, property_type;
+
+#properites for init.qcom.sh script
+type rmnet_mux_prop, property_type;
+type qemu_hw_mainkeys_prop, property_type;
+type sys_usb_controller_prop, property_type;
+type sys_usb_configfs_prop, property_type;
+
+type sys_usb_tethering_prop, property_type;
+
+type coresight_prop, property_type;
+
+type alarm_boot_prop, property_type;
+type boot_animation_prop, property_type;
+
+# DOLBY_START
+type dolby_prop, property_type;
+# DOLBY_END
+
+type wififtmd_prop, property_type;
+
+type fst_prop, property_type;
+
+type alarm_handled_prop, property_type;
+type alarm_instance_prop, property_type;
+
+#HWUI property
+type hwui_prop, property_type;
+
+type graphics_vulkan_prop, property_type;
+
+#Bservice property
+type bservice_prop, property_type;
+
+#Delayed Service Reschedule property
+type reschedule_service_prop, property_type;
+
+#boot mode property
+type boot_mode_prop, property_type;
+
+type ppd_prop, property_type;
+type qemu_gles_prop, property_type;
+
+type vendor_rild_libpath_prop, property_type;
+
+#Peripheral manager
+type per_mgr_state_prop, property_type;
+
+type vendor_system_prop, property_type;

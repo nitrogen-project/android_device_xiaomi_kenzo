@@ -1,0 +1,68 @@
+type wcnss_service, domain;
+type wcnss_service_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(wcnss_service)
+net_domain(wcnss_service)
+
+allow wcnss_service wcnss_device:chr_file rw_file_perms;
+
+qmux_socket(wcnss_service);
+
+allow wcnss_service wifi_data_file:dir w_dir_perms;
+allow wcnss_service wifi_data_file:file create_file_perms;
+
+set_prop(wcnss_service, system_prop)
+set_prop(wcnss_service, wifi_prop)
+
+allow wcnss_service wifi_vendor_data_file:dir w_dir_perms;
+allow wcnss_service wifi_vendor_data_file:file create_file_perms;
+
+allow wcnss_service persist_file:dir r_dir_perms;
+qmux_socket(wcnss_service);
+
+allow wcnss_service self:socket create_socket_perms;
+# ioctlcmd=c304
+allowxperm wcnss_service self:socket ioctl msm_sock_ipc_ioctls;
+allowxperm wcnss_service self:udp_socket ioctl SIOCIWFIRSTPRIV_05;
+allow wcnss_service smem_log_device:chr_file rw_file_perms;
+allow wcnss_service proc_net:file rw_file_perms;
+
+# allow wpa_supplicant to send back wifi information to cnd
+allow wcnss_service cnd:unix_dgram_socket sendto;
+allow wcnss_service self:capability {
+    net_admin
+    net_raw
+    net_bind_service
+    setuid
+    setgid
+    dac_override
+};
+
+allow wcnss_service self:netlink_socket create_socket_perms_no_ioctl;
+allow wcnss_service self:netlink_generic_socket create_socket_perms_no_ioctl;
+allow wcnss_service firmware_file:dir r_dir_perms;
+allow wcnss_service firmware_file:file r_file_perms;
+allow wcnss_service sysfs:file rw_file_perms;
+allow wcnss_service sysfs_data:file r_file_perms;
+allow wcnss_service wifi_prop:property_service set;
+
+# allow access to netd
+unix_socket_connect(wcnss_service, netd, netd)
+
+userdebug_or_eng(`
+allow wcnss_service fuse:dir create_dir_perms;
+allow wcnss_service fuse:file create_file_perms;
+allow wcnss_service vfat:dir create_dir_perms;
+allow wcnss_service vfat:file create_file_perms;
+allow wcnss_service persist_file:file { rw_file_perms setattr };
+allow wcnss_service dynamic_nv_data_file:file r_file_perms;
+allow wcnss_service dynamic_nv_data_file:dir r_dir_perms;
+
+# This is needed for ptt_socket app to write logs file collected to sdcard
+r_dir_file(wcnss_service, storage_file)
+r_dir_file(wcnss_service, mnt_user_file)
+diag_use(wcnss_service)
+')
+
+#binder_use(wcnss_service)
+use_per_mgr(wcnss_service)
