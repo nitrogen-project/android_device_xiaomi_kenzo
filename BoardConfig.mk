@@ -189,15 +189,7 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 # Enable dex-preoptimization to speed up first boot sequence
-ifeq ($(HOST_OS),linux)
-  ifeq ($(WITH_DEXPREOPT),)
-    ifeq ($(TARGET_BUILD_VARIANT),user)
-      WITH_DEXPREOPT := true
-    else
-      WITH_DEXPREOPT := false
-    endif
-  endif
-endif
+WITH_DEXPREOPT := true
 
 # Enable peripheral manager
 TARGET_PER_MGR_ENABLED := true
