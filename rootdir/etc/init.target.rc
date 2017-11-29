@@ -325,6 +325,14 @@ service gx_fpd /vendor/bin/gx_fpd
     disabled
     writepid /dev/cpuset/system-background/tasks
 
+on property:ro.boot.fpsensor=fpc
+    setprop persist.sys.fp.goodix 0
+    setprop ro.hardware.fingerprint fpc
+
+on property:ro.boot.fpsensor=gdx
+    setprop persist.sys.fp.goodix 1
+    setprop ro.hardware.fingerprint goodix
+
 on property:persist.sys.fp.goodix=0
     stop gx_fpd
 

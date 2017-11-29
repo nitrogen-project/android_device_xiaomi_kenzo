@@ -115,10 +115,6 @@ PRODUCT_PACKAGES += \
     make_ext4fs \
     setup_fs
 
-# Fingerprint
-PRODUCT_PACKAGES += \
-    fingerprint.msm8952
-
 # FM radio
 PRODUCT_PACKAGES += \
     FM2 \
