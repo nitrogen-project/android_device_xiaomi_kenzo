@@ -118,7 +118,7 @@ allow qti_init_shell { serial_device userdebug_or_eng(`qdss_device') }:chr_file 
 
 
 allow qti_init_shell {
-    { sysfs_type - usermodehelper }
+    { sysfs_type -sysfs_usermodehelper -usermodehelper }
     sysfs_devices_system_cpu
     sysfs_thermal
     sysfs_lowmemorykiller

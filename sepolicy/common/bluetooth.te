@@ -10,7 +10,6 @@ type bt_logger_exec, exec_type, vendor_file_type, file_type;
 
 type btnvtool, bluetoothdomain;
 type btnvtool_exec, exec_type, vendor_file_type, file_type;
-domain_auto_trans(qti_init_shell, btnvtool_exec, bluetooth)
 allow bluetooth qti_init_shell:fd use;
 allow bluetooth qti_init_shell:fifo_file rw_file_perms;
 
