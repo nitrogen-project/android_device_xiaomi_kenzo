@@ -251,6 +251,10 @@ PRODUCT_PACKAGES += \
     init.target.rc \
     ueventd.qcom.rc
 
+# Power HAL
+PRODUCT_PACKAGES += \
+    power.msm8952
+
 # RIL
 PRODUCT_PACKAGES += \
     librmnetctl \
