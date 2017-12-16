@@ -180,9 +180,6 @@ function get-set-forall() {
         echo 81250 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min 
     fi
 
-    # Vibrator intensity (max - 3596, min - 116)
-    write /sys/class/timed_output/vibrator/vtg_level 1800
-
     # Set scheduler
     write /sys/block/mmcblk0/queue/scheduler noop
 

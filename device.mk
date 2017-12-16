@@ -313,6 +313,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.media.treble_omx=false
 
+PRODUCT_PACKAGES += \
+    XiaomiParts
+
 # setup dalvik vm and hwui configs.
 $(call inherit-product, vendor/nitrogen/config/phone-xxhdpi-2048-dalvik-heap.mk)
 $(call inherit-product, vendor/nitrogen/config/phone-xxhdpi-2048-hwui-memory.mk)

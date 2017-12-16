@@ -90,6 +90,14 @@ on boot
     chmod 0664 /sys/class/graphics/fb0/mode
     chmod 0664 /sys/class/graphics/fb0/modes
 
+    # Vibrator permissions
+    chown root system /sys/class/timed_output/vibrator/vtg_level
+    chmod 0660 /sys/class/timed_output/vibrator/vtg_level
+
+    # Touchscreen
+    chown root system /sys/android_touch/doubletap2wake
+    chmod 0660 /sys/android_touch/doubletap2wake
+
     chown system graphics /sys/class/graphics/fb0/dyn_pu
     chown system graphics /sys/class/graphics/fb0/dynamic_fps
     chown system graphics /sys/class/graphics/fb0/idle_time
