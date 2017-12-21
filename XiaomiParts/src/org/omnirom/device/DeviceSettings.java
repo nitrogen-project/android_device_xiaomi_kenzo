@@ -23,6 +23,8 @@ import android.content.res.Resources;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -58,6 +60,10 @@ public class DeviceSettings extends PreferenceActivity implements
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         addPreferencesFromResource(R.xml.main);
+
+        ListView lv = getListView();
+        lv.setDivider(new ColorDrawable(Color.TRANSPARENT));
+        lv.setDividerHeight(0);
 
         mVibratorStrength = (VibratorStrengthPreference) findPreference(KEY_VIBSTRENGTH);
         if (mVibratorStrength != null) {
