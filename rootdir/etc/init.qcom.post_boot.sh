@@ -185,3 +185,13 @@ function get-set-forall() {
 
     # enable Audio High Performance Mode
     echo 1 > /sys/module/snd_soc_msm8x16_wcd/parameters/high_perf_mode
+
+    # disable wakelocks
+    write /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws 0
+    write /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws 0
+    write /sys/module/wakeup/parameters/enable_ipa_ws 0
+    write /sys/module/wakeup/parameters/enable_wlan_wow_wl_ws 0
+    write /sys/module/wakeup/parameters/enable_wlan_ws 0
+    write /sys/module/wakeup/parameters/enable_timerfd_ws 0
+    write /sys/module/wakeup/parameters/enable_netlink_ws 0
+    write /sys/module/wakeup/parameters/enable_netmgr_wl_ws 0
