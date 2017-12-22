@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dip">
+        android:padding="15dip">
 
         <ImageView android:id="@android:id/icon"
                 android:layout_width="wrap_content"
@@ -26,12 +26,19 @@
                 android:visibility="gone"
                 android:contentDescription="@null" />
 
+        <TextView
+                android:id="@+id/current_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp" />
+
         <SeekBar android:id="@*android:id/seekbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:padding="5dip" />
 
         <Button android:id="@+id/vib_test"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/vib_test"
                 android:layout_marginTop="10dip" />
