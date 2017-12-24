@@ -19,7 +19,6 @@
     <string name="category_vibrator">Vibrator</string>
     <string name="vib_strength_title_head">Strength</string>
     <string name="vib_strength_summary_head">Define the strength of the vibrator</string>
-    <string name="vib_test">Test</string>
     <string name="taptowake_summary">Double tap to wake device</string>
     <string name="taptowake_title">Tap to wake</string>
 

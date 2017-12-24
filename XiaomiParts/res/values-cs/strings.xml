@@ -19,7 +19,6 @@
     <string name="category_vibrator">Vibrace</string>
     <string name="vib_strength_title_head">Síla</string>
     <string name="vib_strength_summary_head">Nastavte intenzitu vibrací</string>
-    <string name="vib_test">Otestuj</string>
     <string name="taptowake_summary">Zapnutí telefonu dvojklikem na obrazovku</string>
     <string name="taptowake_title">Zapnutí kliknutím</string>
 

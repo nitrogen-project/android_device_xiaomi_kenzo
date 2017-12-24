@@ -25,7 +25,6 @@ import android.database.ContentObserver;
 import android.preference.SeekBarDialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.os.Bundle;
@@ -43,7 +42,6 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
     private int mMaxValue;
     private float offset;
     private Vibrator mVibrator;
-    private Button mTestButton;
     private TextView mValueText;
 
     private static final String FILE_LEVEL = "/sys/class/timed_output/vibrator/vtg_level";
@@ -77,17 +75,6 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
         mSeekBar.setProgress(mOldStrength - mMinValue);
         mValueText = (TextView) view.findViewById(R.id.current_value);
         mValueText.setText(Integer.toString(Math.round(mOldStrength / offset)) + "%");
-
-        mTestButton = (Button) view.findViewById(R.id.vib_test);
-        if (!mVibrator.hasVibrator()){
-            mTestButton.setEnabled(false);
-        } else {
-            mTestButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mVibrator.vibrate(testVibrationPattern, -1);
-                }
-            });
-        }
         mSeekBar.setOnSeekBarChangeListener(this);
     }
 
@@ -123,7 +110,8 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
     }
 
     public void onStopTrackingTouch(SeekBar seekBar) {
-        // NA
+        if (mVibrator.hasVibrator())
+            mVibrator.vibrate(testVibrationPattern, -1);
     }
 
     @Override
