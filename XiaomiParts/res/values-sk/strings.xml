@@ -18,7 +18,7 @@
     <string name="advanced_settings">Funkcie zariadenia</string>
     <string name="category_vibrator">Vibrácie</string>
     <string name="vib_strength_title_head">Sila</string>
-    <string name="vib_strength_summary_head">Nastavte intenzitu vibrácií</string>
+    <string name="vib_strength_summary_head">Nastaviť intenzitu vibrácií</string>
     <string name="taptowake_summary">Zapnutie telefónu dvojklikom na obrazovku</string>
     <string name="taptowake_title">Zapnutie kliknutím</string>
 
