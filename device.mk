@@ -122,17 +122,14 @@ PRODUCT_PACKAGES += \
     qcom.fmradio.xml
 
 # GPS
-PRODUCT_PACKAGES += \
-    com.android.location.provider \
-    gps.msm8952
-
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
-    $(LOCAL_PATH)/configs/flp.conf:system/etc/flp.conf \
-    $(LOCAL_PATH)/configs/izat.conf:system/etc/izat.conf \
-    $(LOCAL_PATH)/configs/lowi.conf:system/etc/lowi.conf \
-    $(LOCAL_PATH)/configs/sap.conf:system/etc/sap.conf \
-    $(LOCAL_PATH)/configs/xtwifi.conf:system/etc/xtwifi.conf \
+    $(LOCAL_PATH)/configs/apdr.conf:system/vendor/etc/apdr.conf \
+    $(LOCAL_PATH)/configs/gps.conf:system/vendor/etc/gps.conf \
+    $(LOCAL_PATH)/configs/flp.conf:system/vendor/etc/flp.conf \
+    $(LOCAL_PATH)/configs/izat.conf:system/vendor/etc/izat.conf \
+    $(LOCAL_PATH)/configs/lowi.conf:system/vendor/etc/lowi.conf \
+    $(LOCAL_PATH)/configs/sap.conf:system/vendor/etc/sap.conf \
+    $(LOCAL_PATH)/configs/xtwifi.conf:system/vendor/etc/xtwifi.conf \
     $(LOCAL_PATH)/configs/sec_config:system/etc/sec_config
 
 # Irq balance
