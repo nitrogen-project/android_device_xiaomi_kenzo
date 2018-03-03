@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014-2017 The OmniROM Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="app_name">小米中心</string>
+    <string name="advanced_settings">设备特性</string>
+    <string name="category_vibrator">振动</string>
+    <string name="vib_strength_title_head">振动强度</string>
+    <string name="vib_strength_summary_head">设置振动传感器的振动强度</string>
+    <string name="taptowake_summary">在息屏状态通过双击屏幕唤醒手机</string>
+    <string name="taptowake_title">双击唤醒</string>
+
+    <string name="display_title">显示</string>
+    <string name="device_doze_title">环境显示</string>
+</resources>
