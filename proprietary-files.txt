@@ -443,20 +443,6 @@ bin/consumerird
 # Display calibration data
 etc/pp_calib_data_sharp_r63315_1080p_video_mode_dsi_panel.xml|08d8a40dc05ab00eb0709319b99e507124aacfdd
 
-# DRM
-bin/qseecomd
-vendor/lib64/lib-sec-disp.so
-vendor/lib64/libdrmfs.so
-vendor/lib64/libdrmtime.so
-vendor/lib64/libQSEEComAPI.so
-vendor/lib64/librpmb.so
-vendor/lib64/libsecureui.so
-vendor/lib64/libsecureui_svcsock.so
-vendor/lib64/libSecureUILib.so
-vendor/lib64/libssd.so
-vendor/lib64/libStDrvInt.so
-vendor/lib/libQSEEComAPI.so
-
 # Fingerprint sensor
 bin/gx_fpd
 lib64/hw/fingerprint.goodix.default.so
@@ -475,88 +461,3 @@ etc/firmware/goodixfp.b01
 etc/firmware/goodixfp.b02
 etc/firmware/goodixfp.b03
 etc/firmware/goodixfp.mdt
-
-# QMI
-bin/irsc_util
-etc/mbn_ota.txt
-etc/data/dsi_config.xml
-etc/data/netmgr_config.xml
-etc/data/qmi_config.xml
-etc/permissions/qti_permissions.xml
-vendor/lib64/libdiag.so
-vendor/lib64/libdsi_netctrl.so
-vendor/lib64/libdsutils.so
-vendor/lib64/libidl.so
-vendor/lib64/liblqe.so
-vendor/lib64/libqcci_legacy.so
-vendor/lib64/libqcmaputils.so
-vendor/lib64/libqdi.so
-vendor/lib64/libqdp.so
-vendor/lib64/libqmi.so
-vendor/lib64/libqmi_cci.so
-vendor/lib64/libqmi_client_helper.so
-vendor/lib64/libqmi_client_qmux.so
-vendor/lib64/libqmi_common_so.so
-vendor/lib64/libqmi_csi.so
-vendor/lib64/libqmi_encdec.so
-vendor/lib64/libqmiservices.so
-vendor/lib64/libsmemlog.so
-vendor/lib/libdiag.so
-vendor/lib/libdsi_netctrl.so
-vendor/lib/libdsutils.so
-vendor/lib/libidl.so
-vendor/lib/liblqe.so
-vendor/lib/libqcci_legacy.so
-vendor/lib/libqdi.so
-vendor/lib/libqdp.so
-vendor/lib/libqmi.so
-vendor/lib/libqmi_cci.so
-vendor/lib/libqmi_client_helper.so
-vendor/lib/libqmi_client_qmux.so
-vendor/lib/libqmi_common_so.so
-vendor/lib/libqmi_csi.so
-vendor/lib/libqmi_encdec.so
-vendor/lib/libqmiservices.so
-vendor/lib/libsmemlog.so
-
-# Radio
--app/datastatusnotification/datastatusnotification.apk
--app/fastdormancy/fastdormancy.apk
--app/shutdownlistener/shutdownlistener.apk
--framework/qcnvitems.jar
--framework/qcrilhook.jar
-bin/netmgrd
-bin/qmuxd
-bin/radish
-bin/rmt_storage
-bin/tftp_server
-etc/permissions/qcnvitems.xml
-etc/permissions/qcrilhook.xml
--priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk|4b35becdda381206deeafd1e955999663a463b87
-vendor/bin/qti
-vendor/Diag.cfg
-vendor/lib64/libconfigdb.so
-vendor/lib64/libmdmdetect.so
-vendor/lib64/libnetmgr.so
-vendor/lib64/libril-qc-qmi-1.so
-vendor/lib64/libril-qcril-hook-oem.so
-vendor/lib64/libsystem_health_mon.so
-vendor/lib/libmdmdetect.so
-vendor/qcril.db
-
-# Thermal
-vendor/bin/thermal-engine
-vendor/lib64/libthermalclient.so
-vendor/lib64/libthermalioctl.so
-vendor/lib/libthermalclient.so
-
-# Time services
--app/TimeService/TimeService.apk
-bin/time_daemon
-vendor/lib64/libTimeService.so
--vendor/lib64/libtime_genoff.so
-vendor/lib/libTimeService.so
--vendor/lib/libtime_genoff.so
-
-# WiFi
-bin/wcnss_service
