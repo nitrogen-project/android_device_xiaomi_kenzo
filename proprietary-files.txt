@@ -32,7 +32,7 @@ vendor/lib/libmmcamera2_pp_buf_mgr.so
 vendor/lib/libmmcamera2_pproc_modules.so
 vendor/lib/libmmcamera2_q3a_core.so
 vendor/lib/libmmcamera2_sensor_debug.so
-vendor/lib/libmmcamera2_sensor_modules.so
+vendor/lib/libmmcamera2_sensor_modules.so|943bd5840adaef2020f4fbe625f8a20358a6c408
 vendor/lib/libmmcamera2_stats_algorithm.so
 vendor/lib/libmmcamera2_stats_modules.so
 vendor/lib/libmmcamera2_vpe_module.so
