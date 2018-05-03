@@ -319,5 +319,3 @@ $(call inherit-product, vendor/nitrogen/config/phone-xxhdpi-2048-dalvik-heap.mk)
 $(call inherit-product, vendor/nitrogen/config/phone-xxhdpi-2048-hwui-memory.mk)
 
 $(call inherit-product, $(LOCAL_PATH)/treble.mk)
-
-$(call inherit-product, $(LOCAL_PATH)/utils.mk)
