@@ -27,7 +27,7 @@
 #
 #
 
-on post-fs data
+on post-fs-data
     mkdir /data/goodix 0700 system system
 
 on boot
